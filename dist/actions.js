@@ -35,11 +35,16 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 exports.__esModule = true;
-exports.getUsers = exports.createUser = void 0;
+exports.login = exports.deleteUser = exports.updateUser = exports.getUsers = exports.createUser = void 0;
 var typeorm_1 = require("typeorm"); // getRepository"  traer una tabla de la base de datos asociada al objeto
 var Users_1 = require("./entities/Users");
 var utils_1 = require("./utils");
+var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+//crear usuario
 var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var userRepo, user, newUser, results;
     return __generator(this, function (_a) {
@@ -69,6 +74,7 @@ var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
     });
 }); };
 exports.createUser = createUser;
+//buscar todos los usuarios
 var getUsers = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var users;
     return __generator(this, function (_a) {
@@ -81,3 +87,98 @@ var getUsers = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
     });
 }); };
 exports.getUsers = getUsers;
+//editar usuario
+var updateUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var user, results;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, typeorm_1.getRepository(Users_1.Users).findOne(req.params.id)];
+            case 1:
+                user = _a.sent();
+                if (!user) return [3 /*break*/, 3];
+                typeorm_1.getRepository(Users_1.Users).merge(user, req.body);
+                return [4 /*yield*/, typeorm_1.getRepository(Users_1.Users).save(user)];
+            case 2:
+                results = _a.sent();
+                return [2 /*return*/, res.json(results)];
+            case 3: return [2 /*return*/, res.status(404).json({ msg: "No user found." })];
+        }
+    });
+}); };
+exports.updateUser = updateUser;
+//borrar usuario
+var deleteUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var users, users_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, typeorm_1.getRepository(Users_1.Users).findOne(req.params.id)];
+            case 1:
+                users = _a.sent();
+                if (!!users) return [3 /*break*/, 2];
+                return [2 /*return*/, res.json({ msg: "This user doesn't exist." })];
+            case 2: return [4 /*yield*/, typeorm_1.getRepository(Users_1.Users)["delete"](req.params.id)];
+            case 3:
+                users_1 = _a.sent();
+                return [2 /*return*/, res.json(users_1)];
+        }
+    });
+}); };
+exports.deleteUser = deleteUser;
+//crear local
+// export const createLocal = async (req: Request, res:Response): Promise<Response> =>{
+// 	if(!req.body.nombre) throw new Exception("Por favor, ingrese un nombre.")
+// 	if(!req.body.direccion) throw new Exception("Por favor, ingrese una dirección.")
+// 	if(!req.body.horario) throw new Exception("Por favor, ingrese un horario.")
+//     if(!req.body.telefono) throw new Exception("Por favor, ingrese un teléfono.")
+// 	const newLocal = getRepository(Local).create(req.body);  
+// 	const results = await getRepository(Local).save(newLocal);
+// 	return res.json(results);
+// }
+//buscar todos los locales
+// export const getLocal = async (req: Request, res: Response): Promise<Response> =>{
+// 		const local = await getRepository(Local).find();
+// 		return res.json(local);
+// }
+//buscar local por id
+// export const getLocalById = async (req: Request, res: Response): Promise<Response> =>{
+//         const local = await getRepository(Local).findOne(req.params.id);
+//         if(!local) throw new Exception("No existe un local con este id.");
+// 		return res.json(local);
+// }
+//borrar local
+// export const deleteLocal = async (req: Request, res: Response): Promise<Response> =>{
+//     const local = await getRepository(Local).findOne(req.params.id);
+//     if(!local) {
+//         return res.json({ msg :"Este local no existe."});
+//     }else {
+//     const local = await getRepository(Local).delete(req.params.id);
+// 		return res.json(local);
+//     }	
+// }
+//login usuario
+var login = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var userRepo, user, token;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (!req.body.email)
+                    throw new utils_1.Exception("Please specify an email on your request body", 400);
+                if (!req.body.password)
+                    throw new utils_1.Exception("Please specify a password on your request body", 400);
+                return [4 /*yield*/, typeorm_1.getRepository(Users_1.Users)
+                    // We need to validate that a user with this email and password exists in the DB
+                ];
+            case 1:
+                userRepo = _a.sent();
+                return [4 /*yield*/, userRepo.findOne({ where: { email: req.body.email, password: req.body.password } })];
+            case 2:
+                user = _a.sent();
+                if (!user)
+                    throw new utils_1.Exception("Invalid email or password", 401);
+                token = jsonwebtoken_1["default"].sign({ user: user }, process.env.JWT_KEY, { expiresIn: 60 * 60 });
+                // return the user and the recently created token to the client
+                return [2 /*return*/, res.json({ user: user, token: token })];
+        }
+    });
+}); };
+exports.login = login;

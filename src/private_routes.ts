@@ -32,7 +32,8 @@ const verifyToken= (req: Request,res:Response, next:NextFunction) =>{
     next()
 }
 
-
 router.get('/user', safe(actions.getUsers));
+router.post('/login', verifyToken, safe(actions.login));
+router.get('/user/:id', safe(actions.deleteUser));
 
 export default router;

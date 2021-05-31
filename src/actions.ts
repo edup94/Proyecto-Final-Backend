@@ -29,6 +29,65 @@ export const getUsers = async (req: Request, res: Response): Promise<Response> =
 		return res.json(users);
 }
 
+//editar usuario
+export const updateUser = async (req: Request, res:Response): Promise<Response> =>{
+    const user = await getRepository(Users).findOne(req.params.id);
+	if(user) {
+        getRepository(Users).merge(user, req.body);
+        const results = await getRepository(Users).save(user);
+        return res.json(results);
+    }
+	return res.status(404).json({msg: "No user found."});
+}
+
+//borrar usuario
+export const deleteUser = async (req: Request, res: Response): Promise<Response> =>{
+    const users = await getRepository(Users).findOne(req.params.id);
+    if(!users) {
+        return res.json({ msg :"This user doesn't exist."});
+    }else {
+    const users = await getRepository(Users).delete(req.params.id);
+		return res.json(users);
+    }	
+}
+
+//crear local
+// export const createLocal = async (req: Request, res:Response): Promise<Response> =>{
+
+// 	if(!req.body.nombre) throw new Exception("Por favor, ingrese un nombre.")
+// 	if(!req.body.direccion) throw new Exception("Por favor, ingrese una dirección.")
+// 	if(!req.body.horario) throw new Exception("Por favor, ingrese un horario.")
+//     if(!req.body.telefono) throw new Exception("Por favor, ingrese un teléfono.")
+    
+// 	const newLocal = getRepository(Local).create(req.body);  
+// 	const results = await getRepository(Local).save(newLocal);
+// 	return res.json(results);
+// }
+
+//buscar todos los locales
+// export const getLocal = async (req: Request, res: Response): Promise<Response> =>{
+// 		const local = await getRepository(Local).find();
+// 		return res.json(local);
+// }
+
+//buscar local por id
+// export const getLocalById = async (req: Request, res: Response): Promise<Response> =>{
+//         const local = await getRepository(Local).findOne(req.params.id);
+//         if(!local) throw new Exception("No existe un local con este id.");
+// 		return res.json(local);
+// }
+
+//borrar local
+// export const deleteLocal = async (req: Request, res: Response): Promise<Response> =>{
+//     const local = await getRepository(Local).findOne(req.params.id);
+//     if(!local) {
+//         return res.json({ msg :"Este local no existe."});
+//     }else {
+//     const local = await getRepository(Local).delete(req.params.id);
+// 		return res.json(local);
+//     }	
+// }
+
 //login usuario
 export const login = async (req: Request, res: Response): Promise<Response> =>{
 		
