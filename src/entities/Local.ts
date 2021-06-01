@@ -25,6 +25,9 @@ export class Local extends BaseEntity{
   @Column()
   horario: string;
 
+  @Column()
+  descripcion: string;
+
   @ManyToOne(() => Usuario, usuario => usuario.locales)
    usuario: Usuario;
 

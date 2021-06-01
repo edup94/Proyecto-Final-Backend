@@ -47,10 +47,10 @@ var verifyToken = function (req, res, next) {
 router.get('/user', verifyToken, utils_1.safe(actions.getUsers));
 router.put('/user/:id', verifyToken, utils_1.safe(actions.updateUser));
 router["delete"]('/user/:id', verifyToken, utils_1.safe(actions.deleteUser));
-router.post('/local', verifyToken, utils_1.safe(actions.createLocal));
-router.get('/local', verifyToken, utils_1.safe(actions.getLocal));
-router.get('/local/:id', verifyToken, utils_1.safe(actions.getLocalById));
-router["delete"]('/local/:id', verifyToken, utils_1.safe(actions.deleteLocal));
-router.post('/localFav/:userid/:localid', verifyToken, utils_1.safe(actions.addLocalFav));
-router["delete"]('/localFav/:userid/:localid', verifyToken, utils_1.safe(actions.deleteLocalFav));
+router.post('/local', utils_1.safe(actions.createLocal));
+router.get('/local', utils_1.safe(actions.getLocal));
+router.get('/local/:id', utils_1.safe(actions.getLocalById));
+router["delete"]('/local/:id', utils_1.safe(actions.deleteLocal));
+router.post('/localFav/:userid/:localid', utils_1.safe(actions.addLocalFav));
+router["delete"]('/localFav/:userid/:localid', utils_1.safe(actions.deleteLocalFav));
 exports["default"] = router;

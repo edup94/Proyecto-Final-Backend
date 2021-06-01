@@ -4,6 +4,8 @@ import { Usuario } from './entities/Usuario'
 import { Exception } from './utils'
 import jwt from 'jsonwebtoken'
 import { Local } from './entities/Local'
+import { Perfil } from './entities/Perfil'
+import { Favorito } from './entities/Favorito'
 
 //crear usuario
 export const createUser = async (req: Request, res:Response): Promise<Response> =>{
@@ -61,6 +63,7 @@ export const createLocal = async (req: Request, res:Response): Promise<Response>
 	if(!req.body.direccion) throw new Exception("Por favor, ingrese una dirección.")
 	if(!req.body.horario) throw new Exception("Por favor, ingrese un horario.")
     if(!req.body.telefono) throw new Exception("Por favor, ingrese un teléfono.")
+    if(!req.body.descripcion) throw new Exception("Por favor, ingrese una descripción.")
     
 	const newLocal = getRepository(Local).create(req.body);  
 	const results = await getRepository(Local).save(newLocal);
@@ -113,11 +116,14 @@ export const login = async (req: Request, res: Response): Promise<Response> =>{
 export const addLocalFav = async (req: Request, res: Response): Promise<Response> => {
     const localRepo = getRepository(Local)
     const usuarioRepo = getRepository(Usuario)
-    const usuario = await usuarioRepo.findOne(req.params.usuarioid, {relations:["locales"]})
+    const favRepo = getRepository(Favorito)
+    const usuario = await usuarioRepo.findOne(req.params.usuarioid)
     const local = await localRepo.findOne(req.params.localid)
     if (usuario && local) {
-        usuario.locales = [...usuario.locales,local]
-        const results = await usuarioRepo.save(usuario)
+        const newFav = favRepo.create()
+        newFav.usuario = usuario
+        newFav.local = local
+        const results = await favRepo.save(newFav)
         return res.json(results)
     }
     return res.json("Error")
@@ -134,4 +140,12 @@ export const deleteLocalFav = async (req: Request, res: Response): Promise<Respo
         result = await getRepository(Usuario).save(usuario);
     }
     return res.json(result)
+}
+
+export const createPerfil = async (req: Request, res: Response): Promise<Response> => {
+    if(!req.body.tipo) throw new Exception("Por favor, ingrese un tipo de perfil.")
+
+	const newPerfil = getRepository(Perfil).create(req.body);  //Creo un perfil
+	const results = await getRepository(Perfil).save(newPerfil); //Grabo el nuevo perfil 
+	return res.json(results);
 }

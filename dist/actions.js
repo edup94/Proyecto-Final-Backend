@@ -44,12 +44,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-exports.deleteLocalFav = exports.addLocalFav = exports.login = exports.deleteLocal = exports.getLocalById = exports.getLocal = exports.createLocal = exports.deleteUser = exports.updateUser = exports.getUsers = exports.createUser = void 0;
+exports.createPerfil = exports.deleteLocalFav = exports.addLocalFav = exports.login = exports.deleteLocal = exports.getLocalById = exports.getLocal = exports.createLocal = exports.deleteUser = exports.updateUser = exports.getUsers = exports.createUser = void 0;
 var typeorm_1 = require("typeorm"); // getRepository"  traer una tabla de la base de datos asociada al objeto
 var Usuario_1 = require("./entities/Usuario");
 var utils_1 = require("./utils");
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var Local_1 = require("./entities/Local");
+var Perfil_1 = require("./entities/Perfil");
 //crear usuario
 var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var userRepo, user, newUser, results;
@@ -148,6 +149,8 @@ var createLocal = function (req, res) { return __awaiter(void 0, void 0, void 0,
                     throw new utils_1.Exception("Por favor, ingrese un horario.");
                 if (!req.body.telefono)
                     throw new utils_1.Exception("Por favor, ingrese un teléfono.");
+                if (!req.body.descripcion)
+                    throw new utils_1.Exception("Por favor, ingrese una descripción.");
                 newLocal = typeorm_1.getRepository(Local_1.Local).create(req.body);
                 return [4 /*yield*/, typeorm_1.getRepository(Local_1.Local).save(newLocal)];
             case 1:
@@ -279,3 +282,19 @@ var deleteLocalFav = function (req, res) { return __awaiter(void 0, void 0, void
     });
 }); };
 exports.deleteLocalFav = deleteLocalFav;
+var createPerfil = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var newPerfil, results;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (!req.body.tipo)
+                    throw new utils_1.Exception("Por favor, ingrese un tipo de perfil.");
+                newPerfil = typeorm_1.getRepository(Perfil_1.Perfil).create(req.body);
+                return [4 /*yield*/, typeorm_1.getRepository(Perfil_1.Perfil).save(newPerfil)];
+            case 1:
+                results = _a.sent();
+                return [2 /*return*/, res.json(results)];
+        }
+    });
+}); };
+exports.createPerfil = createPerfil;

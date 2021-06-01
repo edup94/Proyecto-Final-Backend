@@ -55,6 +55,10 @@ var Local = /** @class */ (function (_super) {
         __metadata("design:type", String)
     ], Local.prototype, "horario");
     __decorate([
+        typeorm_1.Column(),
+        __metadata("design:type", String)
+    ], Local.prototype, "descripcion");
+    __decorate([
         typeorm_1.ManyToOne(function () { return Usuario_1.Usuario; }, function (usuario) { return usuario.locales; }),
         __metadata("design:type", Usuario_1.Usuario)
     ], Local.prototype, "usuario");
