@@ -38,17 +38,9 @@ var Favorito = /** @class */ (function (_super) {
         __metadata("design:type", Number)
     ], Favorito.prototype, "id");
     __decorate([
-        typeorm_1.Column(),
-        __metadata("design:type", Number)
-    ], Favorito.prototype, "usuarioid");
-    __decorate([
-        typeorm_1.Column(),
-        __metadata("design:type", Number)
-    ], Favorito.prototype, "localid");
-    __decorate([
         typeorm_1.ManyToOne(function () { return Usuario_1.Usuario; }, function (usuario) { return usuario.favoritos; }),
         __metadata("design:type", Usuario_1.Usuario)
-    ], Favorito.prototype, "usuarios");
+    ], Favorito.prototype, "usuario");
     __decorate([
         typeorm_1.ManyToOne(function () { return Local_1.Local; }, function (local) { return local.favoritos; }),
         __metadata("design:type", Local_1.Local)

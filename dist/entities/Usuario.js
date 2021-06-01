@@ -68,15 +68,15 @@ var Usuario = /** @class */ (function (_super) {
         __metadata("design:type", Perfil_1.Perfil)
     ], Usuario.prototype, "perfiles");
     __decorate([
-        typeorm_1.OneToMany(function () { return Favorito_1.Favorito; }, function (favorito) { return favorito.usuarioid; }),
+        typeorm_1.OneToMany(function () { return Favorito_1.Favorito; }, function (favorito) { return favorito.usuario; }),
         __metadata("design:type", Array)
     ], Usuario.prototype, "favoritos");
     __decorate([
-        typeorm_1.OneToMany(function () { return Local_1.Local; }, function (local) { return local.usuarioid; }),
+        typeorm_1.OneToMany(function () { return Local_1.Local; }, function (local) { return local.usuario; }),
         __metadata("design:type", Array)
     ], Usuario.prototype, "locales");
     __decorate([
-        typeorm_1.OneToMany(function () { return Post_1.Post; }, function (post) { return post.usuarioid; }),
+        typeorm_1.OneToMany(function () { return Post_1.Post; }, function (post) { return post.usuario; }),
         __metadata("design:type", Array)
     ], Usuario.prototype, "posts");
     Usuario = __decorate([

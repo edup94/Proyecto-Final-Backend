@@ -1,6 +1,6 @@
 import {
-  Entity, Column, PrimaryGeneratedColumn, ManyToMany, ManyToOne, 
-  BaseEntity, JoinTable
+  Entity, Column, PrimaryGeneratedColumn, ManyToOne, 
+  BaseEntity
 } from 'typeorm';
 import { Usuario } from './Usuario';
 import { Local } from './Local';
@@ -13,12 +13,6 @@ export class Post extends BaseEntity{
 
   @Column()
   comentario: string;
-
-  @Column()
-  usuarioid: number;
-
-  @Column()
-localid: number;
 
  @ManyToOne(() => Usuario, usuario => usuario.posts)
    usuario: Usuario;

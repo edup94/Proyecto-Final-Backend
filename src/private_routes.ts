@@ -33,7 +33,12 @@ const verifyToken= (req: Request,res:Response, next:NextFunction) =>{
 }
 
 router.get('/user', safe(actions.getUsers));
+router.put('/user/:id', safe(actions.updateUser));
+router.delete('/user/:id', safe(actions.deleteUser));
 router.post('/login', verifyToken, safe(actions.login));
-router.get('/user/:id', safe(actions.deleteUser));
+router.post('/local', safe(actions.createLocal));
+router.get('/local', safe(actions.getLocal));
+router.get('/local/:id', safe(actions.getLocalById));
+router.delete('/local/:id', safe(actions.deleteLocal));
 
 export default router;

@@ -26,6 +26,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 exports.__esModule = true;
 exports.Perfil = void 0;
 var typeorm_1 = require("typeorm");
+var Usuario_1 = require("./Usuario");
 var Perfil = /** @class */ (function (_super) {
     __extends(Perfil, _super);
     function Perfil() {
@@ -39,6 +40,10 @@ var Perfil = /** @class */ (function (_super) {
         typeorm_1.Column(),
         __metadata("design:type", String)
     ], Perfil.prototype, "tipo");
+    __decorate([
+        typeorm_1.OneToMany(function () { return Usuario_1.Usuario; }, function (usuario) { return usuario.perfiles; }),
+        __metadata("design:type", Array)
+    ], Perfil.prototype, "usuario");
     Perfil = __decorate([
         typeorm_1.Entity()
     ], Perfil);

@@ -3,20 +3,23 @@ import { getRepository } from 'typeorm'  // getRepository"  traer una tabla de l
 import { Usuario } from './entities/Usuario'
 import { Exception } from './utils'
 import jwt from 'jsonwebtoken'
+import { Local } from './entities/Local'
 
 //crear usuario
 export const createUser = async (req: Request, res:Response): Promise<Response> =>{
 
 	// important validations to avoid ambiguos errors, the client needs to understand what went wrong
-	if(!req.body.first_name) throw new Exception("Please provide a first_name")
-	if(!req.body.last_name) throw new Exception("Please provide a last_name")
-	if(!req.body.email) throw new Exception("Please provide an email")
-	if(!req.body.password) throw new Exception("Please provide a password")
+    if(!req.body.username) throw new Exception("Por favor ingrese un username")
+    if(!req.body.nombre) throw new Exception("Por favor ingrese un nombre")
+	if(!req.body.apellido) throw new Exception("Por favor ingrese un apellido")
+	if(!req.body.email) throw new Exception("Por favor ingrese un email")
+    if(!req.body.contrasena) throw new Exception("Por favor ingrese una contrasena")
+    if(!req.body.perfil) throw new Exception("Por favor ingrese un perfil")
 
 	const userRepo = getRepository(Usuario)
 	// fetch for any user with this email
 	const user = await userRepo.findOne({ where: {email: req.body.email }})
-	if(user) throw new Exception("Users already exists with this email")
+	if(user) throw new Exception("Ya existe un usuario con este email")
 
 	const newUser = getRepository(Usuario).create(req.body);  //Creo un usuario
 	const results = await getRepository(Usuario).save(newUser); //Grabo el nuevo usuario 
@@ -31,10 +34,10 @@ export const getUsers = async (req: Request, res: Response): Promise<Response> =
 
 //editar usuario
 export const updateUser = async (req: Request, res:Response): Promise<Response> =>{
-    const user = await getRepository(Users).findOne(req.params.id);
+    const user = await getRepository(Usuario).findOne(req.params.id);
 	if(user) {
-        getRepository(Users).merge(user, req.body);
-        const results = await getRepository(Users).save(user);
+        getRepository(Usuario).merge(user, req.body);
+        const results = await getRepository(Usuario).save(user);
         return res.json(results);
     }
 	return res.status(404).json({msg: "No user found."});
@@ -42,51 +45,51 @@ export const updateUser = async (req: Request, res:Response): Promise<Response> 
 
 //borrar usuario
 export const deleteUser = async (req: Request, res: Response): Promise<Response> =>{
-    const users = await getRepository(Users).findOne(req.params.id);
+    const users = await getRepository(Usuario).findOne(req.params.id);
     if(!users) {
         return res.json({ msg :"This user doesn't exist."});
     }else {
-    const users = await getRepository(Users).delete(req.params.id);
+    const users = await getRepository(Usuario).delete(req.params.id);
 		return res.json(users);
     }	
 }
 
 //crear local
-// export const createLocal = async (req: Request, res:Response): Promise<Response> =>{
+export const createLocal = async (req: Request, res:Response): Promise<Response> =>{
 
-// 	if(!req.body.nombre) throw new Exception("Por favor, ingrese un nombre.")
-// 	if(!req.body.direccion) throw new Exception("Por favor, ingrese una dirección.")
-// 	if(!req.body.horario) throw new Exception("Por favor, ingrese un horario.")
-//     if(!req.body.telefono) throw new Exception("Por favor, ingrese un teléfono.")
+	if(!req.body.nombre) throw new Exception("Por favor, ingrese un nombre.")
+	if(!req.body.direccion) throw new Exception("Por favor, ingrese una dirección.")
+	if(!req.body.horario) throw new Exception("Por favor, ingrese un horario.")
+    if(!req.body.telefono) throw new Exception("Por favor, ingrese un teléfono.")
     
-// 	const newLocal = getRepository(Local).create(req.body);  
-// 	const results = await getRepository(Local).save(newLocal);
-// 	return res.json(results);
-// }
+	const newLocal = getRepository(Local).create(req.body);  
+	const results = await getRepository(Local).save(newLocal);
+	return res.json(results);
+}
 
 //buscar todos los locales
-// export const getLocal = async (req: Request, res: Response): Promise<Response> =>{
-// 		const local = await getRepository(Local).find();
-// 		return res.json(local);
-// }
+export const getLocal = async (req: Request, res: Response): Promise<Response> =>{
+		const local = await getRepository(Local).find();
+		return res.json(local);
+}
 
 //buscar local por id
-// export const getLocalById = async (req: Request, res: Response): Promise<Response> =>{
-//         const local = await getRepository(Local).findOne(req.params.id);
-//         if(!local) throw new Exception("No existe un local con este id.");
-// 		return res.json(local);
-// }
+export const getLocalById = async (req: Request, res: Response): Promise<Response> =>{
+        const local = await getRepository(Local).findOne(req.params.id);
+        if(!local) throw new Exception("No existe un local con este id.");
+		return res.json(local);
+}
 
 //borrar local
-// export const deleteLocal = async (req: Request, res: Response): Promise<Response> =>{
-//     const local = await getRepository(Local).findOne(req.params.id);
-//     if(!local) {
-//         return res.json({ msg :"Este local no existe."});
-//     }else {
-//     const local = await getRepository(Local).delete(req.params.id);
-// 		return res.json(local);
-//     }	
-// }
+export const deleteLocal = async (req: Request, res: Response): Promise<Response> =>{
+    const local = await getRepository(Local).findOne(req.params.id);
+    if(!local) {
+        return res.json({ msg :"Este local no existe."});
+    }else {
+    const local = await getRepository(Local).delete(req.params.id);
+		return res.json(local);
+    }	
+}
 
 //login usuario
 export const login = async (req: Request, res: Response): Promise<Response> =>{
@@ -94,7 +97,7 @@ export const login = async (req: Request, res: Response): Promise<Response> =>{
 	if(!req.body.email) throw new Exception("Please specify an email on your request body", 400)
 	if(!req.body.password) throw new Exception("Please specify a password on your request body", 400)
 
-	const userRepo = await getRepository(Users)
+	const userRepo = await getRepository(Usuario)
 
 	// We need to validate that a user with this email and password exists in the DB
 	const user = await userRepo.findOne({ where: { email: req.body.email, password: req.body.password }})

@@ -42,14 +42,6 @@ var Post = /** @class */ (function (_super) {
         __metadata("design:type", String)
     ], Post.prototype, "comentario");
     __decorate([
-        typeorm_1.Column(),
-        __metadata("design:type", Number)
-    ], Post.prototype, "usuarioid");
-    __decorate([
-        typeorm_1.Column(),
-        __metadata("design:type", Number)
-    ], Post.prototype, "localid");
-    __decorate([
         typeorm_1.ManyToOne(function () { return Usuario_1.Usuario; }, function (usuario) { return usuario.posts; }),
         __metadata("design:type", Usuario_1.Usuario)
     ], Post.prototype, "usuario");

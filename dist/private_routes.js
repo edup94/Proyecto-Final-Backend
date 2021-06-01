@@ -52,6 +52,11 @@ var verifyToken = function (req, res, next) {
     next();
 };
 router.get('/user', utils_1.safe(actions.getUsers));
+router.put('/user/:id', utils_1.safe(actions.updateUser));
+router["delete"]('/user/:id', utils_1.safe(actions.deleteUser));
 router.post('/login', verifyToken, utils_1.safe(actions.login));
-router.get('/user/:id', utils_1.safe(actions.deleteUser));
+router.post('/local', utils_1.safe(actions.createLocal));
+router.get('/local', utils_1.safe(actions.getLocal));
+router.get('/local/:id', utils_1.safe(actions.getLocalById));
+router["delete"]('/local/:id', utils_1.safe(actions.deleteLocal));
 exports["default"] = router;

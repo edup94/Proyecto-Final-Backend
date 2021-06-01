@@ -52,10 +52,6 @@ var Local = /** @class */ (function (_super) {
     ], Local.prototype, "telefono");
     __decorate([
         typeorm_1.Column(),
-        __metadata("design:type", Number)
-    ], Local.prototype, "usuarioid");
-    __decorate([
-        typeorm_1.Column(),
         __metadata("design:type", String)
     ], Local.prototype, "horario");
     __decorate([
@@ -63,11 +59,11 @@ var Local = /** @class */ (function (_super) {
         __metadata("design:type", Usuario_1.Usuario)
     ], Local.prototype, "usuario");
     __decorate([
-        typeorm_1.OneToMany(function () { return Post_1.Post; }, function (post) { return post.localid; }),
+        typeorm_1.OneToMany(function () { return Post_1.Post; }, function (post) { return post.local; }),
         __metadata("design:type", Array)
     ], Local.prototype, "posts");
     __decorate([
-        typeorm_1.OneToMany(function () { return Favorito_1.Favorito; }, function (favorito) { return favorito.localid; }),
+        typeorm_1.OneToMany(function () { return Favorito_1.Favorito; }, function (favorito) { return favorito.local; }),
         __metadata("design:type", Array)
     ], Local.prototype, "favoritos");
     Local = __decorate([

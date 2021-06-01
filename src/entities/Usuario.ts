@@ -1,6 +1,6 @@
 import {
-  Entity, Column, PrimaryGeneratedColumn, ManyToMany, OneToMany, ManyToOne,
-  BaseEntity, JoinTable
+  Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne,
+  BaseEntity
 } from 'typeorm';
 
 
@@ -35,18 +35,12 @@ export class Usuario extends BaseEntity{
   @ManyToOne(() => Perfil, perfil => perfil.id)
     perfiles: Perfil;
 
-  @OneToMany(() => Favorito, favorito => favorito.usuarioid)
+  @OneToMany(() => Favorito, favorito => favorito.usuario)
     favoritos: Favorito[];
 
-  @OneToMany(() => Local, local => local.usuarioid)
+  @OneToMany(() => Local, local => local.usuario)
     locales: Local[];
 
-  @OneToMany(() => Post, post => post.usuarioid)
+  @OneToMany(() => Post, post => post.usuario)
     posts: Post[]; 
-
-
-  // @ManyToMany(() => Planet)
-  // @JoinTable()
-  // planets: Planet[];
-  
 }
