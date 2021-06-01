@@ -35,11 +35,16 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __spreadArray = (this && this.__spreadArray) || function (to, from) {
+    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
+        to[j] = from[i];
+    return to;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-exports.login = exports.deleteLocal = exports.getLocalById = exports.getLocal = exports.createLocal = exports.deleteUser = exports.updateUser = exports.getUsers = exports.createUser = void 0;
+exports.deleteLocalFav = exports.addLocalFav = exports.login = exports.deleteLocal = exports.getLocalById = exports.getLocal = exports.createLocal = exports.deleteUser = exports.updateUser = exports.getUsers = exports.createUser = void 0;
 var typeorm_1 = require("typeorm"); // getRepository"  traer una tabla de la base de datos asociada al objeto
 var Usuario_1 = require("./entities/Usuario");
 var utils_1 = require("./utils");
@@ -204,16 +209,17 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
+                console.log("entrando a actions.login");
                 if (!req.body.email)
                     throw new utils_1.Exception("Please specify an email on your request body", 400);
-                if (!req.body.password)
+                if (!req.body.contrasena)
                     throw new utils_1.Exception("Please specify a password on your request body", 400);
                 return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario)
                     // We need to validate that a user with this email and password exists in the DB
                 ];
             case 1:
                 userRepo = _a.sent();
-                return [4 /*yield*/, userRepo.findOne({ where: { email: req.body.email, password: req.body.password } })];
+                return [4 /*yield*/, userRepo.findOne({ where: { email: req.body.email, contrasena: req.body.contrasena } })];
             case 2:
                 user = _a.sent();
                 if (!user)
@@ -225,3 +231,51 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
     });
 }); };
 exports.login = login;
+var addLocalFav = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var localRepo, usuarioRepo, usuario, local, results;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                localRepo = typeorm_1.getRepository(Local_1.Local);
+                usuarioRepo = typeorm_1.getRepository(Usuario_1.Usuario);
+                return [4 /*yield*/, usuarioRepo.findOne(req.params.usuarioid, { relations: ["locales"] })];
+            case 1:
+                usuario = _a.sent();
+                return [4 /*yield*/, localRepo.findOne(req.params.localid)];
+            case 2:
+                local = _a.sent();
+                if (!(usuario && local)) return [3 /*break*/, 4];
+                usuario.locales = __spreadArray(__spreadArray([], usuario.locales), [local]);
+                return [4 /*yield*/, usuarioRepo.save(usuario)];
+            case 3:
+                results = _a.sent();
+                return [2 /*return*/, res.json(results)];
+            case 4: return [2 /*return*/, res.json("Error")];
+        }
+    });
+}); };
+exports.addLocalFav = addLocalFav;
+var deleteLocalFav = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var usuario, localToDelete, result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario).findOne({ relations: ["locales"], where: { id: req.params.usuarioid } })];
+            case 1:
+                usuario = _a.sent();
+                return [4 /*yield*/, typeorm_1.getRepository(Local_1.Local).findOne({ where: { id: req.params.localid } })];
+            case 2:
+                localToDelete = _a.sent();
+                result = { error: "El usuario o local no existe." };
+                if (!(usuario && localToDelete)) return [3 /*break*/, 4];
+                usuario.locales = usuario.locales.filter(function (local) {
+                    return local.id !== localToDelete.id;
+                });
+                return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario).save(usuario)];
+            case 3:
+                result = _a.sent();
+                _a.label = 4;
+            case 4: return [2 /*return*/, res.json(result)];
+        }
+    });
+}); };
+exports.deleteLocalFav = deleteLocalFav;

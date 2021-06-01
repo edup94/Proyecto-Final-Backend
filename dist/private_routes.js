@@ -1,16 +1,4 @@
 "use strict";
-/**
- * Pivate Routes are those API urls that require the user to be
- * logged in before they can be called from the front end.
- *
- * Basically all HTTP requests to these endpoints must have an
- * Authorization header with the value "Bearer <token>"
- * being "<token>" a JWT token generated for the user using
- * the POST /token endpoint
- *
- * Please include in this file all your private URL endpoints.
- *
- */
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
@@ -46,17 +34,23 @@ var verifyToken = function (req, res, next) {
     var token = req.header('Authorization');
     if (!token)
         return res.status(400).json('ACCESS DENIED');
-    var decoded = jsonwebtoken_1["default"].verify(token, process.env.JWT_KEY);
-    req.user = decoded;
-    console.log(decoded);
-    next();
+    try {
+        var decoded = jsonwebtoken_1["default"].verify(token, process.env.JWT_KEY);
+        req.user = decoded;
+        console.log(decoded);
+        next();
+    }
+    catch (_a) {
+        return res.status(400).json('ACCESS DENIED');
+    }
 };
-router.get('/user', utils_1.safe(actions.getUsers));
-router.put('/user/:id', utils_1.safe(actions.updateUser));
-router["delete"]('/user/:id', utils_1.safe(actions.deleteUser));
-router.post('/login', verifyToken, utils_1.safe(actions.login));
-router.post('/local', utils_1.safe(actions.createLocal));
-router.get('/local', utils_1.safe(actions.getLocal));
-router.get('/local/:id', utils_1.safe(actions.getLocalById));
-router["delete"]('/local/:id', utils_1.safe(actions.deleteLocal));
+router.get('/user', verifyToken, utils_1.safe(actions.getUsers));
+router.put('/user/:id', verifyToken, utils_1.safe(actions.updateUser));
+router["delete"]('/user/:id', verifyToken, utils_1.safe(actions.deleteUser));
+router.post('/local', verifyToken, utils_1.safe(actions.createLocal));
+router.get('/local', verifyToken, utils_1.safe(actions.getLocal));
+router.get('/local/:id', verifyToken, utils_1.safe(actions.getLocalById));
+router["delete"]('/local/:id', verifyToken, utils_1.safe(actions.deleteLocal));
+router.post('/localFav/:userid/:localid', verifyToken, utils_1.safe(actions.addLocalFav));
+router["delete"]('/localFav/:userid/:localid', verifyToken, utils_1.safe(actions.deleteLocalFav));
 exports["default"] = router;

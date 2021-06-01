@@ -93,14 +93,14 @@ export const deleteLocal = async (req: Request, res: Response): Promise<Response
 
 //login usuario
 export const login = async (req: Request, res: Response): Promise<Response> =>{
-		
+		console.log("entrando a actions.login")
 	if(!req.body.email) throw new Exception("Please specify an email on your request body", 400)
-	if(!req.body.password) throw new Exception("Please specify a password on your request body", 400)
+	if(!req.body.contrasena) throw new Exception("Please specify a password on your request body", 400)
 
 	const userRepo = await getRepository(Usuario)
 
 	// We need to validate that a user with this email and password exists in the DB
-	const user = await userRepo.findOne({ where: { email: req.body.email, password: req.body.password }})
+	const user = await userRepo.findOne({ where: { email: req.body.email, contrasena: req.body.contrasena }})
 	if(!user) throw new Exception("Invalid email or password", 401)
 
 	// this is the most important line in this function, it create a JWT token
@@ -108,4 +108,30 @@ export const login = async (req: Request, res: Response): Promise<Response> =>{
 	
 	// return the user and the recently created token to the client
 	return res.json({ user, token });
+}
+
+export const addLocalFav = async (req: Request, res: Response): Promise<Response> => {
+    const localRepo = getRepository(Local)
+    const usuarioRepo = getRepository(Usuario)
+    const usuario = await usuarioRepo.findOne(req.params.usuarioid, {relations:["locales"]})
+    const local = await localRepo.findOne(req.params.localid)
+    if (usuario && local) {
+        usuario.locales = [...usuario.locales,local]
+        const results = await usuarioRepo.save(usuario)
+        return res.json(results)
+    }
+    return res.json("Error")
+}
+
+export const deleteLocalFav = async (req: Request, res: Response): Promise<Response> => {
+    const usuario = await getRepository(Usuario).findOne({relations:["locales"], where:{id: req.params.usuarioid}});
+    const localToDelete = await getRepository(Local).findOne({where: {id: req.params.localid}})
+    let result:any = { error: "El usuario o local no existe."};
+    if( usuario && localToDelete){
+        usuario.locales = usuario.locales.filter( local => {
+            return local.id !== localToDelete.id;
+        })
+        result = await getRepository(Usuario).save(usuario);
+    }
+    return res.json(result)
 }
