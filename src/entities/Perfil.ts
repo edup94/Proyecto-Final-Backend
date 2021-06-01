@@ -2,6 +2,7 @@ import {
   Entity, Column, PrimaryGeneratedColumn, ManyToMany, OneToMany, ManyToOne,
   BaseEntity, JoinTable
 } from 'typeorm';
+import { Usuario } from './Usuario';
 
 
 
@@ -14,14 +15,12 @@ export class Perfil extends BaseEntity{
   @Column()
   tipo: string;
 
-  /*
-  @ManyToOne(() => Usuario, usuario => usuario.biciusuarios)
-   usuario: Usuario;
+@ManyToOne(() => Perfil, perfil => perfil.id)
+    perfiles: Perfil;
+  
 
-   @OneToMany(() => Post, post => post.biciusuarios)
-    posts: Post[];
+@OneToMany(() => Usuario, usuario => usuario.perfiles)
+    usuario: Usuario[];
 
-     @OneToMany(() => Favorito, favorito => favorito.biciusuarioid)
-    favoritos: Favorito[];
-   */
+    
 }
