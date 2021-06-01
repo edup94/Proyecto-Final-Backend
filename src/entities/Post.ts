@@ -2,17 +2,27 @@ import {
   Entity, Column, PrimaryGeneratedColumn, ManyToMany, ManyToOne, 
   BaseEntity, JoinTable
 } from 'typeorm';
-import { Biciusuario } from './Biciusuario';
+import { Usuario } from './Usuario';
+import { Local } from './Local';
 
 @Entity()
 export class Post extends BaseEntity{
 
   @PrimaryGeneratedColumn()
-  postid: number;
+  id: number;
 
   @Column()
-  biciusuarioid: number;
+  comentario: string;
 
- @ManyToOne(() => Biciusuario, biciusuario => biciusuario.posts)
-   biciusuarios: Biciusuario;
+  @Column()
+  usuarioid: number;
+
+  @Column()
+localid: number;
+
+ @ManyToOne(() => Usuario, usuario => usuario.posts)
+   usuario: Usuario;
+
+ @ManyToOne(() => Local, local => local.posts)
+   local: Local;
 }

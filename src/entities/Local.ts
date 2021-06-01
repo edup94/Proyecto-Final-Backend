@@ -1,14 +1,17 @@
 import {
-  Entity, Column, PrimaryGeneratedColumn, ManyToMany, ManyToOne,
+  Entity, Column, PrimaryGeneratedColumn, ManyToMany, ManyToOne, OneToMany,
   BaseEntity, JoinTable
 } from 'typeorm';
-import { Propietario } from './Propietario';
+
+import { Usuario } from './Usuario';
+import { Post } from './Post';
+import { Favorito } from './Favorito';
 
 @Entity()
 export class Local extends BaseEntity{
 
   @PrimaryGeneratedColumn()
-  localid: number;
+  id: number;
 
   @Column({unique: true})
  nombre: string;
@@ -20,8 +23,19 @@ export class Local extends BaseEntity{
   telefono: string;
 
   @Column()
+usuarioid: number;
+
+  @Column()
   horario: string;
 
-  @ManyToOne(() => Propietario, propietario => propietario.locales)
-   propietario: Propietario;
+  @ManyToOne(() => Usuario, usuario => usuario.locales)
+   usuario: Usuario;
+
+  @OneToMany(() => Post, post => post.localid)
+    posts: Post[]; 
+
+  @OneToMany(() => Favorito, favorito => favorito.localid)
+    favoritos: Favorito[]; 
+
+
 }

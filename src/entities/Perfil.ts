@@ -3,16 +3,18 @@ import {
   BaseEntity, JoinTable
 } from 'typeorm';
 
-import {Post} from "./Post"
-import {Usuario} from "./Usuario"
-import {Favorito} from "./Favorito"
+
 
 @Entity()
-export class Biciusuario extends BaseEntity{
+export class Perfil extends BaseEntity{
 
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column()
+  tipo: string;
+
+  /*
   @ManyToOne(() => Usuario, usuario => usuario.biciusuarios)
    usuario: Usuario;
 
@@ -21,5 +23,5 @@ export class Biciusuario extends BaseEntity{
 
      @OneToMany(() => Favorito, favorito => favorito.biciusuarioid)
     favoritos: Favorito[];
-
+   */
 }

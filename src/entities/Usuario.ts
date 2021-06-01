@@ -1,10 +1,13 @@
 import {
-  Entity, Column, PrimaryGeneratedColumn, ManyToMany, OneToMany, 
+  Entity, Column, PrimaryGeneratedColumn, ManyToMany, OneToMany, ManyToOne,
   BaseEntity, JoinTable
 } from 'typeorm';
 
-import { Propietario} from "./Propietario"
-import { Biciusuario } from "./Biciusuario"
+
+import { Perfil } from "./Perfil"
+import { Favorito } from "./Favorito"
+import { Local } from "./Local"
+import { Post } from "./Post"
 
 @Entity()
 export class Usuario extends BaseEntity{
@@ -27,14 +30,21 @@ export class Usuario extends BaseEntity{
   contrasena: string;
 
   @Column()
-  perfil: string;
+  perfil: number;
 
-  @OneToMany(() => Propietario, propietario => propietario.usuario)
-    propietarios: Propietario[];
+  @ManyToOne(() => Perfil, perfil => perfil.id)
+    perfiles: Perfil;
 
-@OneToMany(() => Biciusuario, biciusuario => biciusuario.usuario)
-    biciusuarios: Biciusuario[];
-   
+  @OneToMany(() => Favorito, favorito => favorito.usuarioid)
+    favoritos: Favorito[];
+
+  @OneToMany(() => Local, local => local.usuarioid)
+    locales: Local[];
+
+  @OneToMany(() => Post, post => post.usuarioid)
+    posts: Post[]; 
+
+
   // @ManyToMany(() => Planet)
   // @JoinTable()
   // planets: Planet[];
