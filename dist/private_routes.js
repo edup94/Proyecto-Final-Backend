@@ -30,27 +30,34 @@ var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var router = express_1.Router();
 //middleware/token
 var verifyToken = function (req, res, next) {
+    var _a;
     //headers con el token
-    var token = req.header('Authorization');
+    var token = (_a = req.header('Authorization')) === null || _a === void 0 ? void 0 : _a.replace("Bearer ", "");
     if (!token)
         return res.status(400).json('ACCESS DENIED');
     try {
         var decoded = jsonwebtoken_1["default"].verify(token, process.env.JWT_KEY);
         req.user = decoded;
-        console.log(decoded);
+        // console.log(decoded + "verified token");
         next();
     }
-    catch (_a) {
+    catch (_b) {
         return res.status(400).json('ACCESS DENIED');
     }
 };
 router.get('/user', verifyToken, utils_1.safe(actions.getUsers));
 router.put('/user/:id', verifyToken, utils_1.safe(actions.updateUser));
 router["delete"]('/user/:id', verifyToken, utils_1.safe(actions.deleteUser));
-router.post('/local', utils_1.safe(actions.createLocal));
-router.get('/local', utils_1.safe(actions.getLocal));
-router.get('/local/:id', utils_1.safe(actions.getLocalById));
-router["delete"]('/local/:id', utils_1.safe(actions.deleteLocal));
-router.post('/localFav/:userid/:localid', utils_1.safe(actions.addLocalFav));
-router["delete"]('/localFav/:userid/:localid', utils_1.safe(actions.deleteLocalFav));
+router.post('/local', verifyToken, utils_1.safe(actions.createLocal));
+router.get('/local', verifyToken, utils_1.safe(actions.getLocal));
+router.get('/local/:id', verifyToken, utils_1.safe(actions.getLocalById));
+router.put('/local/:id', verifyToken, utils_1.safe(actions.updateLocal));
+router["delete"]('/local/:id', verifyToken, utils_1.safe(actions.deleteLocal));
+router.post('/localFav/:userid/:localid', verifyToken, utils_1.safe(actions.addLocalFav));
+router.get('/localFav', verifyToken, utils_1.safe(actions.getLocalFav));
+router["delete"]('/localFav/:favid', utils_1.safe(actions.deleteLocalFav));
+router.post('/post', verifyToken, utils_1.safe(actions.createPost));
+router.get('/post', verifyToken, utils_1.safe(actions.getPost));
+router.get('/post/:id', verifyToken, utils_1.safe(actions.getPost));
+router["delete"]('/post/:id', verifyToken, utils_1.safe(actions.deletePost));
 exports["default"] = router;
