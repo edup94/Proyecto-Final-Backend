@@ -42,11 +42,11 @@ var Post = /** @class */ (function (_super) {
         __metadata("design:type", String)
     ], Post.prototype, "comentario");
     __decorate([
-        typeorm_1.ManyToOne(function () { return Usuario_1.Usuario; }, function (usuario) { return usuario.posts; }),
+        typeorm_1.ManyToOne(function (type) { return Usuario_1.Usuario; }, function (usuario) { return usuario.posts; }),
         __metadata("design:type", Usuario_1.Usuario)
     ], Post.prototype, "usuario");
     __decorate([
-        typeorm_1.ManyToOne(function () { return Local_1.Local; }, function (local) { return local.posts; }),
+        typeorm_1.ManyToOne(function (type) { return Local_1.Local; }, function (local) { return local.posts; }),
         __metadata("design:type", Local_1.Local)
     ], Post.prototype, "local");
     Post = __decorate([

@@ -64,7 +64,7 @@ var Usuario = /** @class */ (function (_super) {
         __metadata("design:type", Number)
     ], Usuario.prototype, "perfil");
     __decorate([
-        typeorm_1.ManyToOne(function () { return Perfil_1.Perfil; }, function (perfil) { return perfil.id; }),
+        typeorm_1.ManyToOne(function () { return Perfil_1.Perfil; }, function (perfil) { return perfil.usuario; }),
         __metadata("design:type", Perfil_1.Perfil)
     ], Usuario.prototype, "perfiles");
     __decorate([
@@ -76,7 +76,7 @@ var Usuario = /** @class */ (function (_super) {
         __metadata("design:type", Array)
     ], Usuario.prototype, "locales");
     __decorate([
-        typeorm_1.OneToMany(function () { return Post_1.Post; }, function (post) { return post.usuario; }),
+        typeorm_1.OneToMany(function (type) { return Post_1.Post; }, function (post) { return post.usuario; }),
         __metadata("design:type", Array)
     ], Usuario.prototype, "posts");
     Usuario = __decorate([

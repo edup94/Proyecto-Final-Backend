@@ -46,8 +46,8 @@ var utils_1 = require("./utils");
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var Local_1 = require("./entities/Local");
 var Perfil_1 = require("./entities/Perfil");
-var Post_1 = require("./entities/Post");
 var Favorito_1 = require("./entities/Favorito");
+var Post_1 = require("./entities/Post");
 //crear usuario
 var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var userRepo, user, newUser, results;
@@ -326,19 +326,33 @@ var createPerfil = function (req, res) { return __awaiter(void 0, void 0, void 0
 }); };
 exports.createPerfil = createPerfil;
 var createPost = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var usuario, newPost, results;
+    var usuario, localRepo, usuarioRepo, local, newPost, results;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 if (!req.body.comentario)
                     throw new utils_1.Exception("Por favor, ingrese un comentario.");
+                if (!req.body.localId)
+                    throw new utils_1.Exception("Por favor, ingrese un id del local.");
                 usuario = req.user;
-                newPost = typeorm_1.getRepository(Post_1.Post).create(req.body);
-                console.log(newPost, usuario);
-                return [4 /*yield*/, typeorm_1.getRepository(Post_1.Post).save(newPost)];
+                localRepo = typeorm_1.getRepository(Local_1.Local);
+                return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario).findOne(usuario.user.id, { relations: ["posts"] })];
             case 1:
+                usuarioRepo = _a.sent();
+                return [4 /*yield*/, localRepo.findOneOrFail(req.body.localId)];
+            case 2:
+                local = _a.sent();
+                console.log(local);
+                if (!usuarioRepo) return [3 /*break*/, 4];
+                newPost = new Post_1.Post();
+                newPost.usuario = usuario.user;
+                newPost.local = local;
+                newPost.comentario = req.body.comentario;
+                return [4 /*yield*/, typeorm_1.getRepository(Post_1.Post).save(newPost)];
+            case 3:
                 results = _a.sent();
                 return [2 /*return*/, res.json(results)];
+            case 4: return [2 /*return*/, res.json("Error")];
         }
     });
 }); };
@@ -377,9 +391,10 @@ var deletePost = function (req, res) { return __awaiter(void 0, void 0, void 0, 
             case 0: return [4 /*yield*/, typeorm_1.getRepository(Post_1.Post).findOne(req.params.id)];
             case 1:
                 post = _a.sent();
+                console.log(req.params.id);
                 if (!!post) return [3 /*break*/, 2];
                 return [2 /*return*/, res.json({ msg: "This post doesn't exist." })];
-            case 2: return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario)["delete"](req.params.id)];
+            case 2: return [4 /*yield*/, typeorm_1.getRepository(Post_1.Post)["delete"](req.params.id)];
             case 3:
                 post_1 = _a.sent();
                 return [2 /*return*/, res.json(post_1)];

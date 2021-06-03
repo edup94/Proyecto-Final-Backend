@@ -14,9 +14,9 @@ export class Post extends BaseEntity{
   @Column()
   comentario: string;
 
- @ManyToOne(() => Usuario, usuario => usuario.posts)
+ @ManyToOne(type => Usuario, usuario => usuario.posts)
    usuario: Usuario;
 
- @ManyToOne(() => Local, local => local.posts)
+ @ManyToOne(type => Local, local => local.posts)
    local: Local;
 }

@@ -31,7 +31,7 @@ export class Local extends BaseEntity{
   @ManyToOne(() => Usuario, usuario => usuario.locales)
    usuario: Usuario;
 
-  @OneToMany(() => Post, post => post.local)
+  @OneToMany(type => Post, post => post.local)
     posts: Post[]; 
 
   @OneToMany(() => Favorito, favorito => favorito.local)

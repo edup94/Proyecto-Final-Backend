@@ -5,8 +5,8 @@ import { Exception } from './utils'
 import jwt from 'jsonwebtoken'
 import { Local } from './entities/Local'
 import { Perfil } from './entities/Perfil'
-import { Post } from './entities/Post'
 import { Favorito } from './entities/Favorito'
+import { Post } from './entities/Post'
 
 //crear usuario
 export const createUser = async (req: Request, res:Response): Promise<Response> =>{
@@ -148,6 +148,7 @@ user:Usuario,
 //mostrar locales favoritos, agregar usuario como relación para mostrarlo.
 export const getLocalFav = async (req: Request, res: Response): Promise<Response> =>{
         const usuario = req.user as IToken;
+
         const localFav = await getRepository(Favorito).find({relations: ["local"], where: {usuario: {id: usuario.user.id}}});
 		return res.json(localFav);
 }
@@ -173,11 +174,24 @@ export const createPerfil = async (req: Request, res: Response): Promise<Respons
 
 export const createPost = async (req: Request, res: Response): Promise<Response> => {
     if(!req.body.comentario) throw new Exception("Por favor, ingrese un comentario.")
+    if(!req.body.localId) throw new Exception("Por favor, ingrese un id del local.")
     const usuario = req.user as IToken;
-    const newPost = getRepository(Post).create(req.body);
-    console.log(newPost,usuario)
-	const results = await getRepository(Post).save(newPost);
-	return res.json(results);
+    const localRepo = getRepository(Local)
+    const usuarioRepo = await getRepository(Usuario).findOne(usuario.user.id,{relations: ["posts"]}); 
+    let local = await localRepo.findOneOrFail(req.body.localId)
+    console.log(local)
+    if (usuarioRepo) {
+        let newPost = new Post()
+        newPost.usuario = usuario.user
+        newPost.local = local
+        newPost.comentario = req.body.comentario
+        // const results = await postRepo.save(newPost)
+        // usuarioRepo.posts = usuarioRepo.posts.concat(newPost);
+        // // newPost.usuario = usuario.user.id
+        const results = await getRepository(Post).save(newPost);
+        return res.json(results)
+    }
+	return res.json("Error");
 }
 
 export const getPost = async (req: Request, res: Response): Promise<Response> =>{
@@ -194,10 +208,11 @@ export const getPostById = async (req: Request, res: Response): Promise<Response
 
 export const deletePost = async (req: Request, res: Response): Promise<Response> =>{
     const post = await getRepository(Post).findOne(req.params.id);
+    console.log(req.params.id)
     if(!post) {
         return res.json({ msg :"This post doesn't exist."});
     }else {
-    const post = await getRepository(Usuario).delete(req.params.id);
+    const post = await getRepository(Post).delete(req.params.id);
 		return res.json(post);
     }	
 }

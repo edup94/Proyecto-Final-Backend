@@ -32,7 +32,7 @@ export class Usuario extends BaseEntity{
   @Column()
   perfil: number;
 
-  @ManyToOne(() => Perfil, perfil => perfil.id)
+  @ManyToOne(() => Perfil, perfil => perfil.usuario)
     perfiles: Perfil;
 
   @OneToMany(() => Favorito, favorito => favorito.usuario)
@@ -41,6 +41,6 @@ export class Usuario extends BaseEntity{
   @OneToMany(() => Local, local => local.usuario)
     locales: Local[];
 
-  @OneToMany(() => Post, post => post.usuario)
+  @OneToMany(type => Post, post => post.usuario)
     posts: Post[]; 
 }
