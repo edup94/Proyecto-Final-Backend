@@ -59,7 +59,7 @@ export const deleteUser = async (req: Request, res: Response): Promise<Response>
 
 //login usuario
 export const login = async (req: Request, res: Response): Promise<Response> =>{
-		console.log("entrando a actions.login")
+    
 	if(!req.body.email) throw new Exception("Please specify an email on your request body", 400)
 	if(!req.body.contrasena) throw new Exception("Please specify a password on your request body", 400)
 
@@ -84,10 +84,22 @@ export const createLocal = async (req: Request, res:Response): Promise<Response>
 	if(!req.body.horario) throw new Exception("Por favor, ingrese un horario.")
     if(!req.body.telefono) throw new Exception("Por favor, ingrese un teléfono.")
     if(!req.body.descripcion) throw new Exception("Por favor, ingrese una descripción.")
-    
-	const newLocal = getRepository(Local).create(req.body);  
-	const results = await getRepository(Local).save(newLocal);
-	return res.json(results);
+
+    const usuario = req.user as IToken;
+    const usuarioRepo = await getRepository(Usuario).findOne(usuario.user.id);
+    console.log(usuario.user.id)
+    if (usuarioRepo) {
+        let newLocal = new Local()
+        newLocal.nombre = req.body.nombre;
+        newLocal.descripcion = req.body.descripcion;
+        newLocal.horario = req.body.horario;
+        newLocal.direccion = req.body.direccion;
+        newLocal.telefono = req.body.telefono;
+        newLocal.usuario = usuario.user
+        const results = await getRepository(Local).save(newLocal);
+        return res.json(results);
+    }
+    return res.json("Error");
 }
 
 //buscar todos los locales
@@ -98,9 +110,9 @@ export const getLocal = async (req: Request, res: Response): Promise<Response> =
 
 //buscar local por id
 export const getLocalById = async (req: Request, res: Response): Promise<Response> =>{
-        const local = await getRepository(Local).findOne(req.params.id);
-        if(!local) throw new Exception("No existe un local con este id.");
-		return res.json(local);
+    const local = await getRepository(Local).findOne(req.params.id);
+    if(!local) throw new Exception("No existe un local con este id.");
+    return res.json(local);
 }
 
 export const updateLocal = async (req: Request, res:Response): Promise<Response> =>{
@@ -179,15 +191,14 @@ export const createPost = async (req: Request, res: Response): Promise<Response>
     const localRepo = getRepository(Local)
     const usuarioRepo = await getRepository(Usuario).findOne(usuario.user.id,{relations: ["posts"]}); 
     let local = await localRepo.findOneOrFail(req.body.localId)
-    console.log(local)
     if (usuarioRepo) {
         let newPost = new Post()
         newPost.usuario = usuario.user
         newPost.local = local
         newPost.comentario = req.body.comentario
-        // const results = await postRepo.save(newPost)
+        // newPost.usuario = usuario.user.id
         // usuarioRepo.posts = usuarioRepo.posts.concat(newPost);
-        // // newPost.usuario = usuario.user.id
+        // const results = await postRepo.save(newPost)
         const results = await getRepository(Post).save(newPost);
         return res.json(results)
     }

@@ -13,7 +13,7 @@ export class Local extends BaseEntity{
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({unique: true})
+  @Column()
  nombre: string;
 
   @Column()

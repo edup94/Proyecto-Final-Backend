@@ -138,7 +138,6 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                console.log("entrando a actions.login");
                 if (!req.body.email)
                     throw new utils_1.Exception("Please specify an email on your request body", 400);
                 if (!req.body.contrasena)
@@ -162,7 +161,7 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
 exports.login = login;
 //crear local
 var createLocal = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var newLocal, results;
+    var usuario, usuarioRepo, newLocal, results;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -176,11 +175,24 @@ var createLocal = function (req, res) { return __awaiter(void 0, void 0, void 0,
                     throw new utils_1.Exception("Por favor, ingrese un teléfono.");
                 if (!req.body.descripcion)
                     throw new utils_1.Exception("Por favor, ingrese una descripción.");
-                newLocal = typeorm_1.getRepository(Local_1.Local).create(req.body);
-                return [4 /*yield*/, typeorm_1.getRepository(Local_1.Local).save(newLocal)];
+                usuario = req.user;
+                return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario).findOne(usuario.user.id)];
             case 1:
+                usuarioRepo = _a.sent();
+                console.log(usuario.user.id);
+                if (!usuarioRepo) return [3 /*break*/, 3];
+                newLocal = new Local_1.Local();
+                newLocal.nombre = req.body.nombre;
+                newLocal.descripcion = req.body.descripcion;
+                newLocal.horario = req.body.horario;
+                newLocal.direccion = req.body.direccion;
+                newLocal.telefono = req.body.telefono;
+                newLocal.usuario = usuario.user;
+                return [4 /*yield*/, typeorm_1.getRepository(Local_1.Local).save(newLocal)];
+            case 2:
                 results = _a.sent();
                 return [2 /*return*/, res.json(results)];
+            case 3: return [2 /*return*/, res.json("Error")];
         }
     });
 }); };
@@ -342,7 +354,6 @@ var createPost = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 return [4 /*yield*/, localRepo.findOneOrFail(req.body.localId)];
             case 2:
                 local = _a.sent();
-                console.log(local);
                 if (!usuarioRepo) return [3 /*break*/, 4];
                 newPost = new Post_1.Post();
                 newPost.usuario = usuario.user;

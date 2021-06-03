@@ -39,7 +39,7 @@ var Local = /** @class */ (function (_super) {
         __metadata("design:type", Number)
     ], Local.prototype, "id");
     __decorate([
-        typeorm_1.Column({ unique: true }),
+        typeorm_1.Column(),
         __metadata("design:type", String)
     ], Local.prototype, "nombre");
     __decorate([

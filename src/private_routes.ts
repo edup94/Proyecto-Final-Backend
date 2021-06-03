@@ -37,5 +37,6 @@ router.post('/post', verifyToken, safe(actions.createPost));
 router.get('/post', verifyToken, safe(actions.getPost));
 router.get('/post/:id',verifyToken, safe(actions.getPost));
 router.delete('/post/:id',verifyToken, safe(actions.deletePost));
+router.post('/perfil', verifyToken, safe(actions.createPerfil));
 
 export default router;

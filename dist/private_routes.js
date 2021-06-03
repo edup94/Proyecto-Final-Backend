@@ -60,4 +60,5 @@ router.post('/post', verifyToken, utils_1.safe(actions.createPost));
 router.get('/post', verifyToken, utils_1.safe(actions.getPost));
 router.get('/post/:id', verifyToken, utils_1.safe(actions.getPost));
 router["delete"]('/post/:id', verifyToken, utils_1.safe(actions.deletePost));
+router.post('/perfil', verifyToken, utils_1.safe(actions.createPerfil));
 exports["default"] = router;
