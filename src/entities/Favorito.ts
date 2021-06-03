@@ -1,5 +1,5 @@
 import {
-  Entity, Column, PrimaryGeneratedColumn, ManyToOne,
+  Entity, PrimaryGeneratedColumn, ManyToOne,
   BaseEntity
 } from 'typeorm';
 import { Usuario } from './Usuario';
@@ -13,7 +13,7 @@ export class Favorito extends BaseEntity{
    @ManyToOne(() => Usuario, usuario => usuario.favoritos)
    usuario: Usuario;
 
-    @ManyToOne(() => Local, local => local.favoritos)
+    @ManyToOne(() => Local, local => local.favoritos, {onDelete: "CASCADE"})
    local: Local;
 
 }

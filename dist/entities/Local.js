@@ -63,11 +63,11 @@ var Local = /** @class */ (function (_super) {
         __metadata("design:type", Usuario_1.Usuario)
     ], Local.prototype, "usuario");
     __decorate([
-        typeorm_1.OneToMany(function (type) { return Post_1.Post; }, function (post) { return post.local; }),
+        typeorm_1.OneToMany(function (type) { return Post_1.Post; }, function (post) { return post.local; }, { cascade: true }),
         __metadata("design:type", Array)
     ], Local.prototype, "posts");
     __decorate([
-        typeorm_1.OneToMany(function () { return Favorito_1.Favorito; }, function (favorito) { return favorito.local; }),
+        typeorm_1.OneToMany(function () { return Favorito_1.Favorito; }, function (favorito) { return favorito.local; }, { cascade: true }),
         __metadata("design:type", Array)
     ], Local.prototype, "favoritos");
     Local = __decorate([

@@ -225,6 +225,7 @@ var getLocalById = function (req, res) { return __awaiter(void 0, void 0, void 0
     });
 }); };
 exports.getLocalById = getLocalById;
+//editar local
 var updateLocal = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var local, results;
     return __generator(this, function (_a) {
@@ -261,6 +262,7 @@ var deleteLocal = function (req, res) { return __awaiter(void 0, void 0, void 0,
     });
 }); };
 exports.deleteLocal = deleteLocal;
+//agregar local favorito
 var addLocalFav = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var localRepo, usuarioRepo, favRepo, usuario, local, newFav, results;
     return __generator(this, function (_a) {
@@ -321,6 +323,7 @@ var deleteLocalFav = function (req, res) { return __awaiter(void 0, void 0, void
     });
 }); };
 exports.deleteLocalFav = deleteLocalFav;
+//crear perfiles de usuario
 var createPerfil = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var newPerfil, results;
     return __generator(this, function (_a) {
@@ -337,6 +340,7 @@ var createPerfil = function (req, res) { return __awaiter(void 0, void 0, void 0
     });
 }); };
 exports.createPerfil = createPerfil;
+//crear comentario de usuario a un local
 var createPost = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var usuario, localRepo, usuarioRepo, local, newPost, results;
     return __generator(this, function (_a) {
@@ -395,6 +399,7 @@ var getPostById = function (req, res) { return __awaiter(void 0, void 0, void 0,
     });
 }); };
 exports.getPostById = getPostById;
+//borrar comentario de usuario
 var deletePost = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var post, post_1;
     return __generator(this, function (_a) {

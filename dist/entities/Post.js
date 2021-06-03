@@ -46,7 +46,7 @@ var Post = /** @class */ (function (_super) {
         __metadata("design:type", Usuario_1.Usuario)
     ], Post.prototype, "usuario");
     __decorate([
-        typeorm_1.ManyToOne(function (type) { return Local_1.Local; }, function (local) { return local.posts; }),
+        typeorm_1.ManyToOne(function (type) { return Local_1.Local; }, function (local) { return local.posts; }, { onDelete: "CASCADE" }),
         __metadata("design:type", Local_1.Local)
     ], Post.prototype, "local");
     Post = __decorate([

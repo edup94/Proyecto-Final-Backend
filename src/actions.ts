@@ -59,7 +59,7 @@ export const deleteUser = async (req: Request, res: Response): Promise<Response>
 
 //login usuario
 export const login = async (req: Request, res: Response): Promise<Response> =>{
-    
+
 	if(!req.body.email) throw new Exception("Please specify an email on your request body", 400)
 	if(!req.body.contrasena) throw new Exception("Please specify a password on your request body", 400)
 
@@ -115,6 +115,7 @@ export const getLocalById = async (req: Request, res: Response): Promise<Respons
     return res.json(local);
 }
 
+//editar local
 export const updateLocal = async (req: Request, res:Response): Promise<Response> =>{
     const local = await getRepository(Local).findOne(req.params.id);
 	if(local) {
@@ -136,6 +137,7 @@ export const deleteLocal = async (req: Request, res: Response): Promise<Response
     }	
 }
 
+//agregar local favorito
 export const addLocalFav = async (req: Request, res: Response): Promise<Response> => {
     const localRepo = getRepository(Local)
     const usuarioRepo = getRepository(Usuario)
@@ -176,6 +178,7 @@ export const deleteLocalFav = async (req: Request, res: Response): Promise<Respo
     }	
 }
 
+//crear perfiles de usuario
 export const createPerfil = async (req: Request, res: Response): Promise<Response> => {
     if(!req.body.tipo) throw new Exception("Por favor, ingrese un tipo de perfil.")
 
@@ -184,6 +187,7 @@ export const createPerfil = async (req: Request, res: Response): Promise<Respons
 	return res.json(results);
 }
 
+//crear comentario de usuario a un local
 export const createPost = async (req: Request, res: Response): Promise<Response> => {
     if(!req.body.comentario) throw new Exception("Por favor, ingrese un comentario.")
     if(!req.body.localId) throw new Exception("Por favor, ingrese un id del local.")
@@ -217,6 +221,7 @@ export const getPostById = async (req: Request, res: Response): Promise<Response
 		return res.json(post);
 }
 
+//borrar comentario de usuario
 export const deletePost = async (req: Request, res: Response): Promise<Response> =>{
     const post = await getRepository(Post).findOne(req.params.id);
     console.log(req.params.id)

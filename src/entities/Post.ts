@@ -17,6 +17,6 @@ export class Post extends BaseEntity{
  @ManyToOne(type => Usuario, usuario => usuario.posts)
    usuario: Usuario;
 
- @ManyToOne(type => Local, local => local.posts)
+ @ManyToOne(type => Local, local => local.posts, {onDelete: "CASCADE"})
    local: Local;
 }
