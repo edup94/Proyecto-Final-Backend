@@ -15,16 +15,16 @@ user:Usuario,
 //crear usuario
 export const createUser = async (req: Request, res:Response): Promise<Response> =>{
 
-    if(!req.body.username) throw new Exception("Por favor ingrese un username")
-    if(!req.body.nombre) throw new Exception("Por favor ingrese un nombre")
-	if(!req.body.apellido) throw new Exception("Por favor ingrese un apellido")
-	if(!req.body.email) throw new Exception("Por favor ingrese un email")
-    if(!req.body.contrasena) throw new Exception("Por favor ingrese una contrasena")
-    if(!req.body.perfil) throw new Exception("Por favor ingrese un perfil")
+    if(!req.body.username) throw new Exception("Por favor, ingrese un username.")
+    if(!req.body.nombre) throw new Exception("Por favor, ingrese un nombre.")
+	if(!req.body.apellido) throw new Exception("Por favor, ingrese un apellido.")
+	if(!req.body.email) throw new Exception("Por favor, ingrese un email.")
+    if(!req.body.contrasena) throw new Exception("Por favor, ingrese una contraseña.")
+    if(!req.body.perfil) throw new Exception("Por favor, ingrese un perfil.")
 
 	const userRepo = getRepository(Usuario)
 	const user = await userRepo.findOne({ where: {email: req.body.email }})
-	if(user) throw new Exception("Ya existe un usuario con este email")
+	if(user) throw new Exception("Ya existe un usuario con este email.")
 
 	const newUser = getRepository(Usuario).create(req.body);
 	const results = await getRepository(Usuario).save(newUser); 

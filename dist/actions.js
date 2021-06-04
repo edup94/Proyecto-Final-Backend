@@ -40,7 +40,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 exports.__esModule = true;
 exports.deletePost = exports.getPostById = exports.getPost = exports.createPost = exports.createPerfil = exports.deleteLocalFav = exports.getLocalFav = exports.addLocalFav = exports.deleteLocal = exports.updateLocal = exports.getLocalById = exports.getLocal = exports.createLocal = exports.login = exports.deleteUser = exports.updateUser = exports.getUsers = exports.createUser = void 0;
-var typeorm_1 = require("typeorm"); // getRepository"  traer una tabla de la base de datos asociada al objeto
+var typeorm_1 = require("typeorm");
 var Usuario_1 = require("./entities/Usuario");
 var utils_1 = require("./utils");
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -54,7 +54,6 @@ var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                // important validations to avoid ambiguos errors, the client needs to understand what went wrong
                 if (!req.body.username)
                     throw new utils_1.Exception("Por favor ingrese un username");
                 if (!req.body.nombre)
@@ -109,7 +108,7 @@ var updateUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
             case 2:
                 results = _a.sent();
                 return [2 /*return*/, res.json(results)];
-            case 3: return [2 /*return*/, res.status(404).json({ msg: "No user found." })];
+            case 3: return [2 /*return*/, res.status(404).json({ msg: "No se encontró usuario." })];
         }
     });
 }); };
@@ -123,7 +122,7 @@ var deleteUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
             case 1:
                 users = _a.sent();
                 if (!!users) return [3 /*break*/, 2];
-                return [2 /*return*/, res.json({ msg: "This user doesn't exist." })];
+                return [2 /*return*/, res.json({ msg: "Este usuario no existe." })];
             case 2: return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario)["delete"](req.params.id)];
             case 3:
                 users_1 = _a.sent();
@@ -139,21 +138,18 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
         switch (_a.label) {
             case 0:
                 if (!req.body.email)
-                    throw new utils_1.Exception("Please specify an email on your request body", 400);
+                    throw new utils_1.Exception("Por favor, ingresa un mail.", 400);
                 if (!req.body.contrasena)
-                    throw new utils_1.Exception("Please specify a password on your request body", 400);
-                return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario)
-                    // We need to validate that a user with this email and password exists in the DB
-                ];
+                    throw new utils_1.Exception("Por favor, ingresa una contraseña.", 400);
+                return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario)];
             case 1:
                 userRepo = _a.sent();
                 return [4 /*yield*/, userRepo.findOne({ where: { email: req.body.email, contrasena: req.body.contrasena } })];
             case 2:
                 user = _a.sent();
                 if (!user)
-                    throw new utils_1.Exception("Invalid email or password", 401);
+                    throw new utils_1.Exception("Email o contraseña incorrectos.", 401);
                 token = jsonwebtoken_1["default"].sign({ user: user }, process.env.JWT_KEY, { expiresIn: 60 * 60 });
-                // return the user and the recently created token to the client
                 return [2 /*return*/, res.json({ user: user, token: token })];
         }
     });
@@ -179,7 +175,6 @@ var createLocal = function (req, res) { return __awaiter(void 0, void 0, void 0,
                 return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario).findOne(usuario.user.id)];
             case 1:
                 usuarioRepo = _a.sent();
-                console.log(usuario.user.id);
                 if (!usuarioRepo) return [3 /*break*/, 3];
                 newLocal = new Local_1.Local();
                 newLocal.nombre = req.body.nombre;
@@ -244,7 +239,7 @@ var updateLocal = function (req, res) { return __awaiter(void 0, void 0, void 0,
     });
 }); };
 exports.updateLocal = updateLocal;
-//borrar local
+//borrar local y sus comentarios
 var deleteLocal = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var local, local_1;
     return __generator(this, function (_a) {
@@ -409,7 +404,7 @@ var deletePost = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 post = _a.sent();
                 console.log(req.params.id);
                 if (!!post) return [3 /*break*/, 2];
-                return [2 /*return*/, res.json({ msg: "This post doesn't exist." })];
+                return [2 /*return*/, res.json({ msg: "Este comentario no existe." })];
             case 2: return [4 /*yield*/, typeorm_1.getRepository(Post_1.Post)["delete"](req.params.id)];
             case 3:
                 post_1 = _a.sent();
