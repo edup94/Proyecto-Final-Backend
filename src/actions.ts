@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { getRepository } from 'typeorm'  // getRepository"  traer una tabla de la base de datos asociada al objeto
+import { getRepository } from 'typeorm'
 import { Usuario } from './entities/Usuario'
 import { Exception } from './utils'
 import jwt from 'jsonwebtoken'
@@ -8,10 +8,13 @@ import { Perfil } from './entities/Perfil'
 import { Favorito } from './entities/Favorito'
 import { Post } from './entities/Post'
 
+interface IToken {
+user:Usuario,
+}
+
 //crear usuario
 export const createUser = async (req: Request, res:Response): Promise<Response> =>{
 
-	// important validations to avoid ambiguos errors, the client needs to understand what went wrong
     if(!req.body.username) throw new Exception("Por favor ingrese un username")
     if(!req.body.nombre) throw new Exception("Por favor ingrese un nombre")
 	if(!req.body.apellido) throw new Exception("Por favor ingrese un apellido")
@@ -20,12 +23,11 @@ export const createUser = async (req: Request, res:Response): Promise<Response> 
     if(!req.body.perfil) throw new Exception("Por favor ingrese un perfil")
 
 	const userRepo = getRepository(Usuario)
-	// fetch for any user with this email
 	const user = await userRepo.findOne({ where: {email: req.body.email }})
 	if(user) throw new Exception("Ya existe un usuario con este email")
 
-	const newUser = getRepository(Usuario).create(req.body);  //Creo un usuario
-	const results = await getRepository(Usuario).save(newUser); //Grabo el nuevo usuario 
+	const newUser = getRepository(Usuario).create(req.body);
+	const results = await getRepository(Usuario).save(newUser); 
 	return res.json(results);
 }
 
@@ -43,14 +45,14 @@ export const updateUser = async (req: Request, res:Response): Promise<Response> 
         const results = await getRepository(Usuario).save(user);
         return res.json(results);
     }
-	return res.status(404).json({msg: "No user found."});
+	return res.status(404).json({msg: "No se encontró usuario."});
 }
 
 //borrar usuario
 export const deleteUser = async (req: Request, res: Response): Promise<Response> =>{
     const users = await getRepository(Usuario).findOne(req.params.id);
     if(!users) {
-        return res.json({ msg :"This user doesn't exist."});
+        return res.json({ msg :"Este usuario no existe."});
     }else {
     const users = await getRepository(Usuario).delete(req.params.id);
 		return res.json(users);
@@ -60,19 +62,13 @@ export const deleteUser = async (req: Request, res: Response): Promise<Response>
 //login usuario
 export const login = async (req: Request, res: Response): Promise<Response> =>{
 
-	if(!req.body.email) throw new Exception("Please specify an email on your request body", 400)
-	if(!req.body.contrasena) throw new Exception("Please specify a password on your request body", 400)
+	if(!req.body.email) throw new Exception("Por favor, ingresa un mail.", 400)
+	if(!req.body.contrasena) throw new Exception("Por favor, ingresa una contraseña.", 400)
 
 	const userRepo = await getRepository(Usuario)
-
-	// We need to validate that a user with this email and password exists in the DB
 	const user = await userRepo.findOne({ where: { email: req.body.email, contrasena: req.body.contrasena }})
-	if(!user) throw new Exception("Invalid email or password", 401)
-
-	// this is the most important line in this function, it create a JWT token
+	if(!user) throw new Exception("Email o contraseña incorrectos.", 401)
 	const token = jwt.sign({ user }, process.env.JWT_KEY as string, { expiresIn: 60 * 60 });
-	
-	// return the user and the recently created token to the client
 	return res.json({ user, token });
 }
 
@@ -87,7 +83,6 @@ export const createLocal = async (req: Request, res:Response): Promise<Response>
 
     const usuario = req.user as IToken;
     const usuarioRepo = await getRepository(Usuario).findOne(usuario.user.id);
-    console.log(usuario.user.id)
     if (usuarioRepo) {
         let newLocal = new Local()
         newLocal.nombre = req.body.nombre;
@@ -126,7 +121,7 @@ export const updateLocal = async (req: Request, res:Response): Promise<Response>
 	return res.status(404).json({msg: "No se encontró este local."});
 }
 
-//borrar local
+//borrar local y sus comentarios
 export const deleteLocal = async (req: Request, res: Response): Promise<Response> =>{
     const local = await getRepository(Local).findOne(req.params.id);
     if(!local) {
@@ -152,11 +147,6 @@ export const addLocalFav = async (req: Request, res: Response): Promise<Response
         return res.json(results)
     }
     return res.json("Error")
-}
-
-//interfaz Itoken
-interface IToken {
-user:Usuario,
 }
 
 //mostrar locales favoritos, agregar usuario como relación para mostrarlo.
@@ -200,9 +190,6 @@ export const createPost = async (req: Request, res: Response): Promise<Response>
         newPost.usuario = usuario.user
         newPost.local = local
         newPost.comentario = req.body.comentario
-        // newPost.usuario = usuario.user.id
-        // usuarioRepo.posts = usuarioRepo.posts.concat(newPost);
-        // const results = await postRepo.save(newPost)
         const results = await getRepository(Post).save(newPost);
         return res.json(results)
     }
@@ -226,7 +213,7 @@ export const deletePost = async (req: Request, res: Response): Promise<Response>
     const post = await getRepository(Post).findOne(req.params.id);
     console.log(req.params.id)
     if(!post) {
-        return res.json({ msg :"This post doesn't exist."});
+        return res.json({ msg :"Este comentario no existe."});
     }else {
     const post = await getRepository(Post).delete(req.params.id);
 		return res.json(post);

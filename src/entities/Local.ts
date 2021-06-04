@@ -14,7 +14,7 @@ export class Local extends BaseEntity{
   id: number;
 
   @Column()
- nombre: string;
+  nombre: string;
 
   @Column()
   direccion: string;
