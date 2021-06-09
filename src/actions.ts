@@ -70,11 +70,15 @@ export const deleteUser = async (req: Request, res: Response): Promise<Response>
 export const login = async (req: Request, res: Response): Promise<Response> =>{
 
 	if(!req.body.email) throw new Exception("Por favor, ingresa un mail.", 400)
-	if(!req.body.contrasena) throw new Exception("Por favor, ingresa una contraseña.", 400)
+    if(!req.body.contrasena) throw new Exception("Por favor, ingresa una contraseña.", 400)
 
 	const userRepo = await getRepository(Usuario)
-	const user = await userRepo.findOne({ where: { email: req.body.email, contrasena: req.body.contrasena }})
-	if(!user) throw new Exception("Email o contraseña incorrectos.", 401)
+    const user = await userRepo.findOne({ where: { email: req.body.email }})
+    if(!user) throw new Exception("Email incorrecto.", 401)
+    
+    let validPass = await bcrypt.compare(req.body.contrasena, user.contrasena);
+
+	if(!validPass) throw new Exception("Contraseña incorrecta.", 401)
 	const token = jwt.sign({ user }, process.env.JWT_KEY as string, { expiresIn: 60 * 60 });
 	return res.json({ user, token });
 }

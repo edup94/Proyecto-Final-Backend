@@ -142,7 +142,7 @@ var deleteUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
 exports.deleteUser = deleteUser;
 //login usuario
 var login = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var userRepo, user, token;
+    var userRepo, user, validPass, token;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -153,11 +153,16 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
                 return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario)];
             case 1:
                 userRepo = _a.sent();
-                return [4 /*yield*/, userRepo.findOne({ where: { email: req.body.email, contrasena: req.body.contrasena } })];
+                return [4 /*yield*/, userRepo.findOne({ where: { email: req.body.email } })];
             case 2:
                 user = _a.sent();
                 if (!user)
-                    throw new utils_1.Exception("Email o contraseña incorrectos.", 401);
+                    throw new utils_1.Exception("Email incorrecto.", 401);
+                return [4 /*yield*/, bcrypt_1["default"].compare(req.body.contrasena, user.contrasena)];
+            case 3:
+                validPass = _a.sent();
+                if (!validPass)
+                    throw new utils_1.Exception("Contraseña incorrecta.", 401);
                 token = jsonwebtoken_1["default"].sign({ user: user }, process.env.JWT_KEY, { expiresIn: 60 * 60 });
                 return [2 /*return*/, res.json({ user: user, token: token })];
         }
