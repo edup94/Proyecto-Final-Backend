@@ -72,11 +72,11 @@ var Usuario = /** @class */ (function (_super) {
         __metadata("design:type", Array)
     ], Usuario.prototype, "favoritos");
     __decorate([
-        typeorm_1.OneToMany(function () { return Local_1.Local; }, function (local) { return local.usuario; }),
+        typeorm_1.OneToMany(function () { return Local_1.Local; }, function (local) { return local.usuario; }, { cascade: true }),
         __metadata("design:type", Array)
     ], Usuario.prototype, "locales");
     __decorate([
-        typeorm_1.OneToMany(function (type) { return Post_1.Post; }, function (post) { return post.usuario; }),
+        typeorm_1.OneToMany(function (type) { return Post_1.Post; }, function (post) { return post.usuario; }, { cascade: true }),
         __metadata("design:type", Array)
     ], Usuario.prototype, "posts");
     Usuario = __decorate([

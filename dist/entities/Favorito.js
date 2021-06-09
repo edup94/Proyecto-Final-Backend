@@ -38,7 +38,7 @@ var Favorito = /** @class */ (function (_super) {
         __metadata("design:type", Number)
     ], Favorito.prototype, "id");
     __decorate([
-        typeorm_1.ManyToOne(function () { return Usuario_1.Usuario; }, function (usuario) { return usuario.favoritos; }),
+        typeorm_1.ManyToOne(function () { return Usuario_1.Usuario; }, function (usuario) { return usuario.favoritos; }, { onDelete: "CASCADE" }),
         __metadata("design:type", Usuario_1.Usuario)
     ], Favorito.prototype, "usuario");
     __decorate([

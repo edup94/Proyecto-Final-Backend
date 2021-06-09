@@ -59,7 +59,7 @@ var Local = /** @class */ (function (_super) {
         __metadata("design:type", String)
     ], Local.prototype, "descripcion");
     __decorate([
-        typeorm_1.ManyToOne(function () { return Usuario_1.Usuario; }, function (usuario) { return usuario.locales; }),
+        typeorm_1.ManyToOne(function () { return Usuario_1.Usuario; }, function (usuario) { return usuario.locales; }, { onDelete: "CASCADE" }),
         __metadata("design:type", Usuario_1.Usuario)
     ], Local.prototype, "usuario");
     __decorate([

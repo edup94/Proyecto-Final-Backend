@@ -38,9 +38,9 @@ export class Usuario extends BaseEntity{
   @OneToMany(() => Favorito, favorito => favorito.usuario)
     favoritos: Favorito[];
 
-  @OneToMany(() => Local, local => local.usuario)
+  @OneToMany(() => Local, local => local.usuario , {cascade: true})
     locales: Local[];
 
-  @OneToMany(type => Post, post => post.usuario)
+  @OneToMany(type => Post, post => post.usuario , {cascade: true})
     posts: Post[]; 
 }

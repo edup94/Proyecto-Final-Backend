@@ -14,7 +14,7 @@ export class Post extends BaseEntity{
   @Column()
   comentario: string;
 
- @ManyToOne(type => Usuario, usuario => usuario.posts)
+ @ManyToOne(type => Usuario, usuario => usuario.posts , {onDelete: "CASCADE"})
    usuario: Usuario;
 
  @ManyToOne(type => Local, local => local.posts, {onDelete: "CASCADE"})

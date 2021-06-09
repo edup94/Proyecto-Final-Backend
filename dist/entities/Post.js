@@ -42,7 +42,7 @@ var Post = /** @class */ (function (_super) {
         __metadata("design:type", String)
     ], Post.prototype, "comentario");
     __decorate([
-        typeorm_1.ManyToOne(function (type) { return Usuario_1.Usuario; }, function (usuario) { return usuario.posts; }),
+        typeorm_1.ManyToOne(function (type) { return Usuario_1.Usuario; }, function (usuario) { return usuario.posts; }, { onDelete: "CASCADE" }),
         __metadata("design:type", Usuario_1.Usuario)
     ], Post.prototype, "usuario");
     __decorate([

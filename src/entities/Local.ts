@@ -28,7 +28,7 @@ export class Local extends BaseEntity{
   @Column()
   descripcion: string;
 
-  @ManyToOne(() => Usuario, usuario => usuario.locales)
+  @ManyToOne(() => Usuario, usuario => usuario.locales, {onDelete: "CASCADE"})
    usuario: Usuario;
 
   @OneToMany(type => Post, post => post.local, {cascade: true})

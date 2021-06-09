@@ -10,7 +10,7 @@ export class Favorito extends BaseEntity{
   @PrimaryGeneratedColumn()
   id: number;
 
-   @ManyToOne(() => Usuario, usuario => usuario.favoritos)
+   @ManyToOne(() => Usuario, usuario => usuario.favoritos, {onDelete: "CASCADE"})
    usuario: Usuario;
 
     @ManyToOne(() => Local, local => local.favoritos, {onDelete: "CASCADE"})
