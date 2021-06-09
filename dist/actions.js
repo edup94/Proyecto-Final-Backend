@@ -48,33 +48,42 @@ var Local_1 = require("./entities/Local");
 var Perfil_1 = require("./entities/Perfil");
 var Favorito_1 = require("./entities/Favorito");
 var Post_1 = require("./entities/Post");
+var bcrypt_1 = __importDefault(require("bcrypt"));
 //crear usuario
 var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var userRepo, user, newUser, results;
+    var userRepo, user, saltRounds, salt, hashedPass, newUser, results;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 if (!req.body.username)
-                    throw new utils_1.Exception("Por favor ingrese un username");
+                    throw new utils_1.Exception("Por favor, ingrese un username.");
                 if (!req.body.nombre)
-                    throw new utils_1.Exception("Por favor ingrese un nombre");
+                    throw new utils_1.Exception("Por favor, ingrese un nombre.");
                 if (!req.body.apellido)
-                    throw new utils_1.Exception("Por favor ingrese un apellido");
+                    throw new utils_1.Exception("Por favor, ingrese un apellido.");
                 if (!req.body.email)
-                    throw new utils_1.Exception("Por favor ingrese un email");
+                    throw new utils_1.Exception("Por favor, ingrese un email.");
                 if (!req.body.contrasena)
-                    throw new utils_1.Exception("Por favor ingrese una contrasena");
+                    throw new utils_1.Exception("Por favor, ingrese una contraseña.");
                 if (!req.body.perfil)
-                    throw new utils_1.Exception("Por favor ingrese un perfil");
+                    throw new utils_1.Exception("Por favor, ingrese un perfil.");
                 userRepo = typeorm_1.getRepository(Usuario_1.Usuario);
                 return [4 /*yield*/, userRepo.findOne({ where: { email: req.body.email } })];
             case 1:
                 user = _a.sent();
                 if (user)
-                    throw new utils_1.Exception("Ya existe un usuario con este email");
-                newUser = typeorm_1.getRepository(Usuario_1.Usuario).create(req.body);
-                return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario).save(newUser)];
+                    throw new utils_1.Exception("Ya existe un usuario con este email.");
+                saltRounds = 10;
+                return [4 /*yield*/, bcrypt_1["default"].genSalt(saltRounds)];
             case 2:
+                salt = _a.sent();
+                return [4 /*yield*/, bcrypt_1["default"].hash(req.body.contrasena, salt)];
+            case 3:
+                hashedPass = _a.sent();
+                newUser = typeorm_1.getRepository(Usuario_1.Usuario).create({ username: req.body.username, nombre: req.body.nombre, apellido: req.body.apellido,
+                    email: req.body.email, contrasena: hashedPass, perfil: req.body.perfil });
+                return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario).save(newUser)];
+            case 4:
                 results = _a.sent();
                 return [2 /*return*/, res.json(results)];
         }

@@ -7,6 +7,7 @@ import { Local } from './entities/Local'
 import { Perfil } from './entities/Perfil'
 import { Favorito } from './entities/Favorito'
 import { Post } from './entities/Post'
+import bcrypt from 'bcrypt';
 
 interface IToken {
 user:Usuario,
@@ -24,9 +25,15 @@ export const createUser = async (req: Request, res:Response): Promise<Response> 
 
 	const userRepo = getRepository(Usuario)
 	const user = await userRepo.findOne({ where: {email: req.body.email }})
-	if(user) throw new Exception("Ya existe un usuario con este email.")
+    if(user) throw new Exception("Ya existe un usuario con este email.")
+    
+    //encriptar contraseña
+    let saltRounds = 10;
+    let salt = await bcrypt.genSalt(saltRounds);
+    let hashedPass = await bcrypt.hash(req.body.contrasena, salt);
 
-	const newUser = getRepository(Usuario).create(req.body);
+    const newUser = getRepository(Usuario).create({username: req.body.username, nombre: req.body.nombre, apellido: req.body.apellido, 
+    email: req.body.email, contrasena: hashedPass, perfil: req.body.perfil});
 	const results = await getRepository(Usuario).save(newUser); 
 	return res.json(results);
 }
