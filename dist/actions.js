@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-exports.createTransporter = exports.deletePost = exports.getPostById = exports.getPost = exports.createPost = exports.createPerfil = exports.deleteLocalFav = exports.getLocalFav = exports.addLocalFav = exports.deleteLocal = exports.updateLocal = exports.getLocalById = exports.getLocal = exports.createLocal = exports.login = exports.deleteUser = exports.updateUser = exports.getUsers = exports.createUser = void 0;
+exports.deletePost = exports.getPostById = exports.getPost = exports.createPost = exports.createPerfil = exports.deleteLocalFav = exports.getLocalFav = exports.addLocalFav = exports.deleteLocal = exports.updateLocal = exports.getLocalById = exports.getLocal = exports.createLocal = exports.login = exports.deleteUser = exports.updateUser = exports.getUsers = exports.createUser = void 0;
 var typeorm_1 = require("typeorm");
 var Usuario_1 = require("./entities/Usuario");
 var utils_1 = require("./utils");
@@ -52,9 +52,9 @@ var bcrypt_1 = __importDefault(require("bcrypt"));
 var nodemailer_1 = __importDefault(require("nodemailer"));
 //crear usuario
 var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var userRepo, user, saltRounds, salt, hashedPass, newUser, results;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var userRepo, user, saltRounds, salt, hashedPass, newUser, _a, username, nombre, apellido, perfil;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
                 if (!req.body.username)
                     throw new utils_1.Exception("Por favor, ingrese un username.");
@@ -71,25 +71,25 @@ var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 userRepo = typeorm_1.getRepository(Usuario_1.Usuario);
                 return [4 /*yield*/, userRepo.findOne({ where: { email: req.body.email } })];
             case 1:
-                user = _a.sent();
+                user = _b.sent();
                 if (user)
                     throw new utils_1.Exception("Ya existe un usuario con este email.");
                 saltRounds = 10;
                 return [4 /*yield*/, bcrypt_1["default"].genSalt(saltRounds)];
             case 2:
-                salt = _a.sent();
+                salt = _b.sent();
                 return [4 /*yield*/, bcrypt_1["default"].hash(req.body.contrasena, salt)];
             case 3:
-                hashedPass = _a.sent();
+                hashedPass = _b.sent();
                 newUser = typeorm_1.getRepository(Usuario_1.Usuario).create({
                     username: req.body.username, nombre: req.body.nombre, apellido: req.body.apellido,
                     email: req.body.email, contrasena: hashedPass, perfil: req.body.perfil
                 });
                 return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario).save(newUser)];
             case 4:
-                results = _a.sent();
-                sendMail();
-                return [2 /*return*/, res.json(results)];
+                _a = _b.sent(), username = _a.username, nombre = _a.nombre, apellido = _a.apellido, perfil = _a.perfil;
+                enviarMail(newUser);
+                return [2 /*return*/, res.json({ username: username, nombre: nombre, apellido: apellido, perfil: perfil })];
         }
     });
 }); };
@@ -431,36 +431,31 @@ var deletePost = function (req, res) { return __awaiter(void 0, void 0, void 0, 
     });
 }); };
 exports.deletePost = deletePost;
-// create reusable transporter object using the default SMTP transport
-var createTransporter = function () {
-    var transport = nodemailer_1["default"].createTransport({
-        host: "smtp.mailtrap.io",
-        port: 587,
-        secure: false,
-        auth: {
-            user: "9663152fea5ad7",
-            pass: "efb38f8b19db42"
-        }
-    });
-    return transport;
-};
-exports.createTransporter = createTransporter;
-// send mail with defined transport object
-var sendMail = function () { return __awaiter(void 0, void 0, void 0, function () {
+var enviarMail = function (user) { return __awaiter(void 0, void 0, void 0, function () {
     var transporter, info;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                transporter = exports.createTransporter();
+                transporter = nodemailer_1["default"].createTransport({
+                    host: "smtp.gmail.com",
+                    port: 465,
+                    secure: true,
+                    auth: {
+                        user: process.env.EMAIL_ADDRESS,
+                        pass: process.env.EMAIL_PASSWORD
+                    }
+                });
                 return [4 /*yield*/, transporter.sendMail({
-                        from: '"enBICIando" <enbiciando@example.com>',
-                        to: "bar@example.com, baz@example.com",
-                        subject: "Hola! Bienvenido a nuestra comunidad ✔",
+                        from: '"Fred Foo 👻" <foo@example.com>',
+                        to: "" + user.email,
+                        subject: "Hola " + user.nombre,
                         html: correoEjemplo
                     })];
             case 1:
                 info = _a.sent();
-                console.log("Mensaje enviado: %s", info.messageId);
+                console.log(user.email);
+                console.log("Message sent: %s", info.messageId);
+                console.log("Preview URL: %s", nodemailer_1["default"].getTestMessageUrl(info));
                 return [2 /*return*/];
         }
     });
