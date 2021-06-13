@@ -43,11 +43,11 @@ exports.deletePost = exports.getPostById = exports.getPost = exports.createPost 
 var typeorm_1 = require("typeorm");
 var Usuario_1 = require("./entities/Usuario");
 var utils_1 = require("./utils");
-var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var Local_1 = require("./entities/Local");
 var Perfil_1 = require("./entities/Perfil");
 var Favorito_1 = require("./entities/Favorito");
 var Post_1 = require("./entities/Post");
+var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var bcrypt_1 = __importDefault(require("bcrypt"));
 var nodemailer_1 = __importDefault(require("nodemailer"));
 //crear usuario
@@ -89,7 +89,7 @@ var createUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
             case 4:
                 _a = _b.sent(), username = _a.username, nombre = _a.nombre, apellido = _a.apellido, perfil = _a.perfil;
                 enviarMail(newUser);
-                return [2 /*return*/, res.json({ username: username, nombre: nombre, apellido: apellido, perfil: perfil })];
+                return [2 /*return*/, res.status(200).json({ username: username, nombre: nombre, apellido: apellido, perfil: perfil })];
         }
     });
 }); };
@@ -99,10 +99,10 @@ var getUsers = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
     var users;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario).find()];
+            case 0: return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario).find({ select: ["username", "nombre", "apellido", "perfil"] })];
             case 1:
                 users = _a.sent();
-                return [2 /*return*/, res.json(users)];
+                return [2 /*return*/, res.status(200).json(users)];
         }
     });
 }); };
@@ -120,7 +120,7 @@ var updateUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario).save(user)];
             case 2:
                 results = _a.sent();
-                return [2 /*return*/, res.json(results)];
+                return [2 /*return*/, res.status(200).json(results)];
             case 3: return [2 /*return*/, res.status(404).json({ msg: "No se encontró usuario." })];
         }
     });
@@ -135,11 +135,11 @@ var deleteUser = function (req, res) { return __awaiter(void 0, void 0, void 0, 
             case 1:
                 users = _a.sent();
                 if (!!users) return [3 /*break*/, 2];
-                return [2 /*return*/, res.json({ msg: "Este usuario no existe." })];
+                return [2 /*return*/, res.status(404).json({ msg: "Este usuario no existe." })];
             case 2: return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario)["delete"](req.params.id)];
             case 3:
                 users_1 = _a.sent();
-                return [2 /*return*/, res.json(users_1)];
+                return [2 /*return*/, res.status(200).json(users_1)];
         }
     });
 }); };
@@ -204,8 +204,8 @@ var createLocal = function (req, res) { return __awaiter(void 0, void 0, void 0,
                 return [4 /*yield*/, typeorm_1.getRepository(Local_1.Local).save(newLocal)];
             case 2:
                 results = _a.sent();
-                return [2 /*return*/, res.json(results)];
-            case 3: return [2 /*return*/, res.json("Error")];
+                return [2 /*return*/, res.status(200).json(results)];
+            case 3: return [2 /*return*/, res.status(404).json("Error")];
         }
     });
 }); };
@@ -215,10 +215,10 @@ var getLocal = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
     var local;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, typeorm_1.getRepository(Local_1.Local).find()];
+            case 0: return [4 /*yield*/, typeorm_1.getRepository(Local_1.Local).find({ order: { nombre: 'ASC' } })];
             case 1:
                 local = _a.sent();
-                return [2 /*return*/, res.json(local)];
+                return [2 /*return*/, res.status(200).json(local)];
         }
     });
 }); };
@@ -233,7 +233,7 @@ var getLocalById = function (req, res) { return __awaiter(void 0, void 0, void 0
                 local = _a.sent();
                 if (!local)
                     throw new utils_1.Exception("No existe un local con este id.");
-                return [2 /*return*/, res.json(local)];
+                return [2 /*return*/, res.status(200).json(local)];
         }
     });
 }); };
@@ -251,7 +251,7 @@ var updateLocal = function (req, res) { return __awaiter(void 0, void 0, void 0,
                 return [4 /*yield*/, typeorm_1.getRepository(Local_1.Local).save(local)];
             case 2:
                 results = _a.sent();
-                return [2 /*return*/, res.json(results)];
+                return [2 /*return*/, res.status(200).json(results)];
             case 3: return [2 /*return*/, res.status(404).json({ msg: "No se encontró este local." })];
         }
     });
@@ -266,11 +266,11 @@ var deleteLocal = function (req, res) { return __awaiter(void 0, void 0, void 0,
             case 1:
                 local = _a.sent();
                 if (!!local) return [3 /*break*/, 2];
-                return [2 /*return*/, res.json({ msg: "Este local no existe." })];
+                return [2 /*return*/, res.status(404).json({ msg: "Este local no existe." })];
             case 2: return [4 /*yield*/, typeorm_1.getRepository(Local_1.Local)["delete"](req.params.id)];
             case 3:
                 local_1 = _a.sent();
-                return [2 /*return*/, res.json(local_1)];
+                return [2 /*return*/, res.status(200).json(local_1)];
         }
     });
 }); };
@@ -297,8 +297,8 @@ var addLocalFav = function (req, res) { return __awaiter(void 0, void 0, void 0,
                 return [4 /*yield*/, favRepo.save(newFav)];
             case 3:
                 results = _a.sent();
-                return [2 /*return*/, res.json(results)];
-            case 4: return [2 /*return*/, res.json("Error")];
+                return [2 /*return*/, res.status(200).json(results)];
+            case 4: return [2 /*return*/, res.status(404).json("Error")];
         }
     });
 }); };
@@ -313,7 +313,7 @@ var getLocalFav = function (req, res) { return __awaiter(void 0, void 0, void 0,
                 return [4 /*yield*/, typeorm_1.getRepository(Favorito_1.Favorito).find({ relations: ["local"], where: { usuario: { id: usuario.user.id } } })];
             case 1:
                 localFav = _a.sent();
-                return [2 /*return*/, res.json(localFav)];
+                return [2 /*return*/, res.status(200).json(localFav)];
         }
     });
 }); };
@@ -327,11 +327,11 @@ var deleteLocalFav = function (req, res) { return __awaiter(void 0, void 0, void
             case 1:
                 fav = _a.sent();
                 if (!!fav) return [3 /*break*/, 2];
-                return [2 /*return*/, res.json({ msg: "No existe favorito" })];
+                return [2 /*return*/, res.status(404).json({ msg: "No existe favorito" })];
             case 2: return [4 /*yield*/, typeorm_1.getRepository(Favorito_1.Favorito)["delete"](req.params.favid)];
             case 3:
                 fav_1 = _a.sent();
-                return [2 /*return*/, res.json(fav_1)];
+                return [2 /*return*/, res.status(200).json(fav_1)];
         }
     });
 }); };
@@ -348,7 +348,7 @@ var createPerfil = function (req, res) { return __awaiter(void 0, void 0, void 0
                 return [4 /*yield*/, typeorm_1.getRepository(Perfil_1.Perfil).save(newPerfil)];
             case 1:
                 results = _a.sent();
-                return [2 /*return*/, res.json(results)];
+                return [2 /*return*/, res.status(200).json(results)];
         }
     });
 }); };
@@ -379,8 +379,8 @@ var createPost = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 return [4 /*yield*/, typeorm_1.getRepository(Post_1.Post).save(newPost)];
             case 3:
                 results = _a.sent();
-                return [2 /*return*/, res.json(results)];
-            case 4: return [2 /*return*/, res.json("Error")];
+                return [2 /*return*/, res.status(200).json(results)];
+            case 4: return [2 /*return*/, res.status(404).json("Error")];
         }
     });
 }); };
@@ -392,7 +392,7 @@ var getPost = function (req, res) { return __awaiter(void 0, void 0, void 0, fun
             case 0: return [4 /*yield*/, typeorm_1.getRepository(Post_1.Post).find()];
             case 1:
                 post = _a.sent();
-                return [2 /*return*/, res.json(post)];
+                return [2 /*return*/, res.status(200).json(post)];
         }
     });
 }); };
@@ -407,7 +407,7 @@ var getPostById = function (req, res) { return __awaiter(void 0, void 0, void 0,
                 post = _a.sent();
                 if (!post)
                     throw new utils_1.Exception("No existe un post con este id.");
-                return [2 /*return*/, res.json(post)];
+                return [2 /*return*/, res.status(200).json(post)];
         }
     });
 }); };
@@ -420,13 +420,12 @@ var deletePost = function (req, res) { return __awaiter(void 0, void 0, void 0, 
             case 0: return [4 /*yield*/, typeorm_1.getRepository(Post_1.Post).findOne(req.params.id)];
             case 1:
                 post = _a.sent();
-                console.log(req.params.id);
                 if (!!post) return [3 /*break*/, 2];
-                return [2 /*return*/, res.json({ msg: "Este comentario no existe." })];
+                return [2 /*return*/, res.status(404).json({ msg: "Este comentario no existe." })];
             case 2: return [4 /*yield*/, typeorm_1.getRepository(Post_1.Post)["delete"](req.params.id)];
             case 3:
                 post_1 = _a.sent();
-                return [2 /*return*/, res.json(post_1)];
+                return [2 /*return*/, res.status(200).json(post_1)];
         }
     });
 }); };
@@ -446,14 +445,13 @@ var enviarMail = function (user) { return __awaiter(void 0, void 0, void 0, func
                     }
                 });
                 return [4 /*yield*/, transporter.sendMail({
-                        from: '"Fred Foo 👻" <foo@example.com>',
+                        from: '"enBICIando" <enbiciando@example.com>',
                         to: "" + user.email,
-                        subject: "Hola " + user.nombre,
+                        subject: "Hola " + user.nombre + "! Bienvenido a nuestra comunidad.",
                         html: correoEjemplo
                     })];
             case 1:
                 info = _a.sent();
-                console.log(user.email);
                 console.log("Message sent: %s", info.messageId);
                 console.log("Preview URL: %s", nodemailer_1["default"].getTestMessageUrl(info));
                 return [2 /*return*/];

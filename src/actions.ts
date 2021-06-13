@@ -1,12 +1,12 @@
 import { Request, Response } from 'express'
-import { getRepository, AdvancedConsoleLogger } from 'typeorm'
+import { getRepository } from 'typeorm'
 import { Usuario } from './entities/Usuario'
 import { Exception } from './utils'
-import jwt from 'jsonwebtoken'
 import { Local } from './entities/Local'
 import { Perfil } from './entities/Perfil'
 import { Favorito } from './entities/Favorito'
 import { Post } from './entities/Post'
+import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt';
 import nodemailer from "nodemailer";
 
@@ -40,13 +40,13 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
     const { username, nombre, apellido, perfil } = await getRepository(Usuario).save(newUser);
     enviarMail(newUser);
 
-    return res.json({ username, nombre, apellido, perfil });
+    return res.status(200).json({ username, nombre, apellido, perfil });
 }
 
 //buscar todos los usuarios
 export const getUsers = async (req: Request, res: Response): Promise<Response> => {
-    const users = await getRepository(Usuario).find();
-    return res.json(users);
+    const users = await getRepository(Usuario).find({select: [ "username", "nombre", "apellido", "perfil" ]});
+    return res.status(200).json(users);
 }
 
 //editar usuario
@@ -55,7 +55,7 @@ export const updateUser = async (req: Request, res: Response): Promise<Response>
     if (user) {
         getRepository(Usuario).merge(user, req.body);
         const results = await getRepository(Usuario).save(user);
-        return res.json(results);
+        return res.status(200).json(results);
     }
     return res.status(404).json({ msg: "No se encontró usuario." });
 }
@@ -64,10 +64,10 @@ export const updateUser = async (req: Request, res: Response): Promise<Response>
 export const deleteUser = async (req: Request, res: Response): Promise<Response> => {
     const users = await getRepository(Usuario).findOne(req.params.id);
     if (!users) {
-        return res.json({ msg: "Este usuario no existe." });
+        return res.status(404).json({ msg: "Este usuario no existe." });
     } else {
         const users = await getRepository(Usuario).delete(req.params.id);
-        return res.json(users);
+        return res.status(200).json(users);
     }
 }
 
@@ -108,22 +108,22 @@ export const createLocal = async (req: Request, res: Response): Promise<Response
         newLocal.telefono = req.body.telefono;
         newLocal.usuario = usuario.user
         const results = await getRepository(Local).save(newLocal);
-        return res.json(results);
+        return res.status(200).json(results);
     }
-    return res.json("Error");
+    return res.status(404).json("Error");
 }
 
 //buscar todos los locales
 export const getLocal = async (req: Request, res: Response): Promise<Response> => {
-    const local = await getRepository(Local).find();
-    return res.json(local);
+    const local = await getRepository(Local).find({ order: { nombre: 'ASC' } });
+    return res.status(200).json(local);
 }
 
 //buscar local por id
 export const getLocalById = async (req: Request, res: Response): Promise<Response> => {
     const local = await getRepository(Local).findOne(req.params.id);
     if (!local) throw new Exception("No existe un local con este id.");
-    return res.json(local);
+    return res.status(200).json(local);
 }
 
 //editar local
@@ -132,7 +132,7 @@ export const updateLocal = async (req: Request, res: Response): Promise<Response
     if (local) {
         getRepository(Local).merge(local, req.body);
         const results = await getRepository(Local).save(local);
-        return res.json(results);
+        return res.status(200).json(results);
     }
     return res.status(404).json({ msg: "No se encontró este local." });
 }
@@ -141,10 +141,10 @@ export const updateLocal = async (req: Request, res: Response): Promise<Response
 export const deleteLocal = async (req: Request, res: Response): Promise<Response> => {
     const local = await getRepository(Local).findOne(req.params.id);
     if (!local) {
-        return res.json({ msg: "Este local no existe." });
+        return res.status(404).json({ msg: "Este local no existe." });
     } else {
         const local = await getRepository(Local).delete(req.params.id);
-        return res.json(local);
+        return res.status(200).json(local);
     }
 }
 
@@ -160,27 +160,26 @@ export const addLocalFav = async (req: Request, res: Response): Promise<Response
         newFav.usuario = usuario
         newFav.local = local
         const results = await favRepo.save(newFav)
-        return res.json(results)
+        return res.status(200).json(results)
     }
-    return res.json("Error")
+    return res.status(404).json("Error")
 }
 
 //mostrar locales favoritos, agregar usuario como relación para mostrarlo.
 export const getLocalFav = async (req: Request, res: Response): Promise<Response> => {
     const usuario = req.user as IToken;
-
     const localFav = await getRepository(Favorito).find({ relations: ["local"], where: { usuario: { id: usuario.user.id } } });
-    return res.json(localFav);
+    return res.status(200).json(localFav);
 }
 
 //borrar local favorito
 export const deleteLocalFav = async (req: Request, res: Response): Promise<Response> => {
     const fav = await getRepository(Favorito).findOne(req.params.favid);
     if (!fav) {
-        return res.json({ msg: "No existe favorito" });
+        return res.status(404).json({ msg: "No existe favorito" });
     } else {
         const fav = await getRepository(Favorito).delete(req.params.favid);
-        return res.json(fav);
+        return res.status(200).json(fav);
     }
 }
 
@@ -190,7 +189,7 @@ export const createPerfil = async (req: Request, res: Response): Promise<Respons
 
     const newPerfil = getRepository(Perfil).create(req.body);  //Creo un perfil
     const results = await getRepository(Perfil).save(newPerfil); //Grabo el nuevo perfil 
-    return res.json(results);
+    return res.status(200).json(results);
 }
 
 //crear comentario de usuario a un local
@@ -207,32 +206,31 @@ export const createPost = async (req: Request, res: Response): Promise<Response>
         newPost.local = local
         newPost.comentario = req.body.comentario
         const results = await getRepository(Post).save(newPost);
-        return res.json(results)
+        return res.status(200).json(results)
     }
-    return res.json("Error");
+    return res.status(404).json("Error");
 }
 
 export const getPost = async (req: Request, res: Response): Promise<Response> => {
     const post = await getRepository(Post).find();
-    return res.json(post);
+    return res.status(200).json(post);
 }
 
 //buscar post por id
 export const getPostById = async (req: Request, res: Response): Promise<Response> => {
     const post = await getRepository(Post).findOne(req.params.id);
     if (!post) throw new Exception("No existe un post con este id.");
-    return res.json(post);
+    return res.status(200).json(post);
 }
 
 //borrar comentario de usuario
 export const deletePost = async (req: Request, res: Response): Promise<Response> => {
     const post = await getRepository(Post).findOne(req.params.id);
-    console.log(req.params.id)
     if (!post) {
-        return res.json({ msg: "Este comentario no existe." });
+        return res.status(404).json({ msg: "Este comentario no existe." });
     } else {
         const post = await getRepository(Post).delete(req.params.id);
-        return res.json(post);
+        return res.status(200).json(post);
     }
 }
 
@@ -250,12 +248,11 @@ const enviarMail = async (user: Usuario) => {
 
     // send mail with defined transport object
     let info = await transporter.sendMail({
-        from: '"Fred Foo 👻" <foo@example.com>', // sender address
+        from: '"enBICIando" <enbiciando@example.com>', // sender address
         to: `${user.email}`, // list of receivers
-        subject: `Hola ${user.nombre}`, // Subject line
+        subject: `Hola ${user.nombre}! Bienvenido a nuestra comunidad.`, // Subject line
         html: correoEjemplo, // html body
     });
-    console.log(user.email)
     console.log("Message sent: %s", info.messageId);
     console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 }
