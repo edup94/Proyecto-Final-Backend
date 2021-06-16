@@ -107,7 +107,7 @@ var getUsers = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
     });
 }); };
 exports.getUsers = getUsers;
-//editar usuario
+//editar usuario    
 var updateUser = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var user, results;
     return __generator(this, function (_a) {
@@ -389,7 +389,7 @@ var getPost = function (req, res) { return __awaiter(void 0, void 0, void 0, fun
     var post;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, typeorm_1.getRepository(Post_1.Post).find()];
+            case 0: return [4 /*yield*/, typeorm_1.getRepository(Post_1.Post).find({ relations: ["usuario"] })];
             case 1:
                 post = _a.sent();
                 return [2 /*return*/, res.status(200).json(post)];

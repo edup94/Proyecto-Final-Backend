@@ -49,7 +49,7 @@ export const getUsers = async (req: Request, res: Response): Promise<Response> =
     return res.status(200).json(users);
 }
 
-//editar usuario
+//editar usuario    
 export const updateUser = async (req: Request, res: Response): Promise<Response> => {
     const user = await getRepository(Usuario).findOne(req.params.id);
     if (user) {
@@ -212,7 +212,7 @@ export const createPost = async (req: Request, res: Response): Promise<Response>
 }
 
 export const getPost = async (req: Request, res: Response): Promise<Response> => {
-    const post = await getRepository(Post).find();
+    const post = await getRepository(Post).find({relations: ["usuario"]});
     return res.status(200).json(post);
 }
 
