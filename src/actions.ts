@@ -167,8 +167,7 @@ export const addLocalFav = async (req: Request, res: Response): Promise<Response
 
 //mostrar locales favoritos, agregar usuario como relación para mostrarlo.
 export const getLocalFav = async (req: Request, res: Response): Promise<Response> => {
-    const usuario = req.user as IToken;
-    const localFav = await getRepository(Favorito).find({ relations: ["local"], where: { usuario: { id: usuario.user.id } } });
+    const localFav = await getRepository(Favorito).find({ relations: ["local"] });
     return res.status(200).json(localFav);
 }
 
@@ -176,10 +175,11 @@ export const getLocalFav = async (req: Request, res: Response): Promise<Response
 export const deleteLocalFav = async (req: Request, res: Response): Promise<Response> => {
     const fav = await getRepository(Favorito).findOne(req.params.favid);
     if (!fav) {
-        return res.status(404).json({ msg: "No existe favorito" });
+        return res.status(404).json();
     } else {
-        const fav = await getRepository(Favorito).delete(req.params.favid);
-        return res.status(200).json(fav);
+        await getRepository(Favorito).delete(req.params.favid);
+        const localFav = await getRepository(Favorito).find({ relations: ["local"] });
+        return res.status(200).json(localFav);
     }
 }
 

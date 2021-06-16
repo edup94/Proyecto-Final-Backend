@@ -305,12 +305,10 @@ var addLocalFav = function (req, res) { return __awaiter(void 0, void 0, void 0,
 exports.addLocalFav = addLocalFav;
 //mostrar locales favoritos, agregar usuario como relación para mostrarlo.
 var getLocalFav = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var usuario, localFav;
+    var localFav;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0:
-                usuario = req.user;
-                return [4 /*yield*/, typeorm_1.getRepository(Favorito_1.Favorito).find({ relations: ["local"], where: { usuario: { id: usuario.user.id } } })];
+            case 0: return [4 /*yield*/, typeorm_1.getRepository(Favorito_1.Favorito).find({ relations: ["local"] })];
             case 1:
                 localFav = _a.sent();
                 return [2 /*return*/, res.status(200).json(localFav)];
@@ -320,18 +318,21 @@ var getLocalFav = function (req, res) { return __awaiter(void 0, void 0, void 0,
 exports.getLocalFav = getLocalFav;
 //borrar local favorito
 var deleteLocalFav = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var fav, fav_1;
+    var fav, localFav;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, typeorm_1.getRepository(Favorito_1.Favorito).findOne(req.params.favid)];
             case 1:
                 fav = _a.sent();
                 if (!!fav) return [3 /*break*/, 2];
-                return [2 /*return*/, res.status(404).json({ msg: "No existe favorito" })];
+                return [2 /*return*/, res.status(404).json()];
             case 2: return [4 /*yield*/, typeorm_1.getRepository(Favorito_1.Favorito)["delete"](req.params.favid)];
             case 3:
-                fav_1 = _a.sent();
-                return [2 /*return*/, res.status(200).json(fav_1)];
+                _a.sent();
+                return [4 /*yield*/, typeorm_1.getRepository(Favorito_1.Favorito).find({ relations: ["local"] })];
+            case 4:
+                localFav = _a.sent();
+                return [2 /*return*/, res.status(200).json(localFav)];
         }
     });
 }); };
