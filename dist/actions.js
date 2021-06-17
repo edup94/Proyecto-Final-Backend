@@ -99,7 +99,7 @@ var getUsers = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
     var users;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario).find({ select: ["username", "nombre", "apellido", "perfil"] })];
+            case 0: return [4 /*yield*/, typeorm_1.getRepository(Usuario_1.Usuario).find({ select: ["username", "nombre", "apellido", "perfil", "id"] })];
             case 1:
                 users = _a.sent();
                 return [2 /*return*/, res.status(200).json(users)];
@@ -168,7 +168,7 @@ var login = function (req, res) { return __awaiter(void 0, void 0, void 0, funct
                 if (!validPass)
                     throw new utils_1.Exception("Contraseña incorrecta.", 401);
                 token = jsonwebtoken_1["default"].sign({ user: user }, process.env.JWT_KEY, { expiresIn: 60 * 60 });
-                return [2 /*return*/, res.json({ user: user, token: token })];
+                return [2 /*return*/, res.json({ token: token })];
         }
     });
 }); };
@@ -380,7 +380,7 @@ var createPost = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 return [4 /*yield*/, typeorm_1.getRepository(Post_1.Post).save(newPost)];
             case 3:
                 results = _a.sent();
-                return [2 /*return*/, res.status(200).json(results)];
+                return [2 /*return*/, res.status(200).json(newPost)];
             case 4: return [2 /*return*/, res.status(404).json("Error")];
         }
     });

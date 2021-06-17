@@ -45,7 +45,7 @@ export const createUser = async (req: Request, res: Response): Promise<Response>
 
 //buscar todos los usuarios
 export const getUsers = async (req: Request, res: Response): Promise<Response> => {
-    const users = await getRepository(Usuario).find({select: [ "username", "nombre", "apellido", "perfil" ]});
+    const users = await getRepository(Usuario).find({select: [ "username", "nombre", "apellido", "perfil","id" ]});
     return res.status(200).json(users);
 }
 
@@ -85,7 +85,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
 
     if (!validPass) throw new Exception("Contraseña incorrecta.", 401)
     const token = jwt.sign({ user }, process.env.JWT_KEY as string, { expiresIn: 60 * 60 });
-    return res.json({ user, token });
+    return res.json({ token });
 }
 
 //crear local
@@ -206,7 +206,7 @@ export const createPost = async (req: Request, res: Response): Promise<Response>
         newPost.local = local
         newPost.comentario = req.body.comentario
         const results = await getRepository(Post).save(newPost);
-        return res.status(200).json(results)
+        return res.status(200).json(newPost)
     }
     return res.status(404).json("Error");
 }
